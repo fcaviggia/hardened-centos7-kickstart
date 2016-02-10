@@ -2,7 +2,7 @@
 # Hardened CentOS 7 DVD CREATOR
 #
 # This script was written by Frank Caviggia
-# Last update was 13 Nov 2015
+# Last update was 9 Feb 2016
 #
 # Author: Frank Caviggia (fcaviggia@gmail.com)
 # Copyright: Frank Caviggia, (c) 2016
@@ -15,7 +15,7 @@ ABOUT
 =====
 
 Modifies a CentOS 7.2+ x86_64 DVD with a kickstart that will install a system 
-that is configured and hardened to meet government regluations.
+that is configured and hardened to meet government regulations.
 
 The kickstart script involves the integration of the following projects 
 into a single installer:
@@ -58,7 +58,7 @@ createiso.sh - installation script to modify CentOS 7.2+ ISO image
 			Graphical Classification Banner (for GNOME Desktops User/
 			Developer Workstation Profiles)
 
-		suplemental.sh
+		supplemental.sh
 
 			Additional system lockdowns (FIPS 140-2 Kernel Mode, GNOME,
 			wheel group for root access, etc.)
@@ -94,7 +94,7 @@ HARDENING INFORMATION
 Here is some additional information added by the supplemental hardening script
 in addition to the SSG:
 
-1. The kernel option for  FIPS 140-2 mode is contained on the kickstart menu
+1. The kernel option for FIPS 140-2 mode is contained on the kickstart menu
 
 2. Shell timeout (bash/csh) is 15 minutes of inactivity, vlock will lock CLI
    console
@@ -105,7 +105,7 @@ in addition to the SSG:
 4. The 'sshusers' group is required for SSH/SFTP access, other users are 
    limited to console access without this group
    
-5. Additional Software such as McAfee EPo/HBSS may be required meet site 
+5. Additional software such as McAfee EPo/HBSS may be required meet site 
    policy
 
 6. Configure NTP (/etc/chrony.conf) and rsyslog logging to remote server 
