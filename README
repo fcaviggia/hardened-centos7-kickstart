@@ -150,34 +150,55 @@ in addition to the SSG:
 EXAMPLE
 =======
 
-# ./createiso.sh rhel-server-7.1-x86_64-dvd.iso 
-Mounting RHEL DVD Image...
-mount: /dev/loop0 is write-protected, mounting read-only
+# # ./createiso.sh CentOS-7-x86_64-DVD-1601-01.iso 
+Mounting CentOS DVD Image...
+mount: /dev/loop1 is write-protected, mounting read-only
 Done.
-Copying RHEL DVD Image... Done.
-Modifying RHEL DVD Image... Done.
-Remastering RHEL DVD Image...
-I: -input-charset not specified, using utf-8 (detected in locale settings)
-Using RELEA000.HTM;1 for  /RELEASE-NOTES-ja-JP.html (RELEASE-NOTES-ta-IN.html)
-	<..........................................>
-Using POLIC003.RPM;1 for  ./Packages/policycoreutils-python-2.0.83-19.39.el6.x86_64.rpm (policycoreutils-newrole-2.0.83-19.39.el6.x86_64.rpm)
-Size of boot image is 4 sectors -> No emulation
-  0.27% done, estimate finish Tue Jan 21 22:04:41 2014
-	<...........................................>
- 99.86% done, estimate finish Tue Jan 21 22:06:46 2014
-Total translation table size: 976326
-Total rockridge attributes bytes: 430528
-Total directory bytes: 661504
-Path table size(bytes): 286
-Max brk space used 3ee000
-1882600 extents written (3676 MB)
+Copying CentOS DVD Image... Done.
+Modifying CentOS DVD Image... Done.
+Remastering CentOS DVD Image...
+...
+  0.23% done, estimate finish Wed Feb 10 07:34:24 2016
+  0.46% done, estimate finish Wed Feb 10 07:37:59 2016
+  0.70% done, estimate finish Wed Feb 10 07:36:47 2016
+  0.93% done, estimate finish Wed Feb 10 07:36:11 2016
+  1.16% done, estimate finish Wed Feb 10 07:35:50 2016
+  1.39% done, estimate finish Wed Feb 10 07:35:35 2016
+  1.62% done, estimate finish Wed Feb 10 07:35:25 2016
+  1.85% done, estimate finish Wed Feb 10 07:35:17 2016
+  2.09% done, estimate finish Wed Feb 10 07:35:11 2016
+  2.32% done, estimate finish Wed Feb 10 07:35:07 2016
+  2.55% done, estimate finish Wed Feb 10 07:35:03 2016
+  2.78% done, estimate finish Wed Feb 10 07:34:59 2016
+  3.01% done, estimate finish Wed Feb 10 07:34:57 2016
+  3.24% done, estimate finish Wed Feb 10 07:34:54 2016
+  3.48% done, estimate finish Wed Feb 10 07:34:52 2016
+  3.71% done, estimate finish Wed Feb 10 07:34:50 2016
+  3.94% done, estimate finish Wed Feb 10 07:34:49 2016
+  4.17% done, estimate finish Wed Feb 10 07:34:47 2016
+  4.40% done, estimate finish Wed Feb 10 07:34:46 2016
+  4.63% done, estimate finish Wed Feb 10 07:34:45 2016
+  4.87% done, estimate finish Wed Feb 10 07:34:44 2016
+  5.10% done, estimate finish Wed Feb 10 07:34:43 2016
+  5.33% done, estimate finish Wed Feb 10 07:34:42 2016
+  5.56% done, estimate finish Wed Feb 10 07:34:41 2016
+
+...
+
+ 99.87% done, estimate finish Wed Feb 10 07:34:35 2016
+Total translation table size: 2048
+Total rockridge attributes bytes: 417876
+Total directory bytes: 712704
+Path table size(bytes): 158
+Max brk space used 3af000
+2157808 extents written (4214 MB)
 Done.
-Signing RHEL DVD Image...
+Signing CentOS DVD Image...
 Inserting md5sum into iso image...
-md5 = ec4618f4ccc6ccac3cfed291ef341012
+md5 = e526291fc5ff0c83a7de64c183f27b78
 Inserting fragment md5sums into iso image...
-fragmd5 = e115ca49531d6adfee6caadeaf6a895cdc4c3e8b9341f58f5e11e9113a79
+fragmd5 = 631648db156318da3cf5aef0db4d65efa7a774fcceabc45e9ecd7476f22b
 frags = 20
 Setting supported flag to 0
 Done.
-DVD Created. [ssg-rhel-7.1.iso]
+DVD Created. [hardened-centos7-x86_64.iso]
