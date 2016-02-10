@@ -1,0 +1,178 @@
+###############################################################################
+# Hardened CentOS 7 DVD CREATOR
+#
+# This script was written by Frank Caviggia
+# Last update was 13 Nov 2015
+#
+# Author: Frank Caviggia (fcaviggia@gmail.com)
+# Copyright: Frank Caviggia, (c) 2016
+# License: GPLv2
+# Description: Hardened Installation of CentOS 7
+###############################################################################
+
+
+ABOUT
+=====
+
+Modifies a CentOS 7.2+ x86_64 DVD with a kickstart that will install a system 
+that is configured and hardened to meet government regluations.
+
+The kickstart script involves the integration of the following projects 
+into a single installer:
+
+   - classification-banner.py (Python for displaying a graphical classification banner)
+   
+        https://github.com/RedHatGov/classification-banner
+
+
+CONTENT
+=======
+
+createiso.sh - installation script to modify RHEL 7.1+ ISO image
+
+/config - Kickstarts, Python, and RPMs needed to modify image.
+
+	isolinux/
+
+		isolinux.cfg - Menu Configuration for Kickstart
+
+	hardening/
+
+		hardened-centos.cfg
+		
+			Kickstart Configuration (Calls menu.py in %pre)
+		
+		menu.py
+		
+			Python Script that presents a graphical menu to modify the
+			kickstart. Contains the "Profiles" for configuring the 
+			system partitioning and packages.
+
+		classification-banner.py
+		
+			Graphical Classification Banner (for GNOME Desktops User/
+			Developer Workstation Profiles)
+
+		suplemental.sh
+
+			Additional system lockdowns (FIPS 140-2 Kernel Mode, GNOME,
+			wheel group for root access, etc.)
+
+		ovirt-preinstall.sh
+		ovirt-postinstall.sh
+
+			Scripts to loosen settings temporarily to allow registration
+			of the system with RHEV-M by allowing root login and allowing
+			exec in /tmp. Run rhevm-postinstall.sh after system is added
+			into RHEV-M. Copied to /root after kickstart install
+
+		iptables.sh (use with KVM and Ovirt hosts, uses iptables/ebtables)
+
+			Configures iptables firewall during kickstart installation. 
+			Called in menu.py script. Firewall is configured to recommended
+			ports for each product or profile. Copied to /root after kickstart
+			install. FirewallD is default except for KVM systems.
+
+		ipa-pam-configuration.sh
+
+			Configures system for using IPA/IdM authentication by
+			overwriting the pam.d configurations. Copied to /root
+			after kickstart installation
+			
+		ssg-firefox.tar.gz
+		
+			SCAP Security Guide for implimenting DISA STIG on Firefox.
+
+HARDENING INFORMATION
+=====================
+
+Here is some additional information added by the supplemental hardening script
+in addition to the SSG:
+
+1. The kernel option for  FIPS 140-2 mode is contained on the kickstart menu
+
+2. Shell timeout (bash/csh) is 15 minutes of inactivity, vlock will lock CLI
+   console
+
+3. The 'wheel' group is required for privileged users (beyond root) to run 
+   `su -` or `sudo -i` commands, sudo timeout is 5 minutes
+
+4. The 'sshusers' group is required for SSH/SFTP access, other users are 
+   limited to console access without this group
+   
+5. Additional Software such as McAfee EPo/HBSS may be required meet site 
+   policy
+
+6. Configure NTP (/etc/chrony.conf) and rsyslog logging to remote server 
+   (/etc/rsyslog.conf)
+
+8. Create users:
+
+        Local Console Access Only (Unprivileged)
+          
+               # useradd -m -c "Local User" localuser
+               
+        Remote Access (Unprivileged)
+          
+               # useradd -m -c "Remote User" -G sshusers remoteuser
+               
+        System Administrator (SA) (Privileged User)
+               
+               # useradd -m -c "System Administrator" -G sshusers,wheel admin
+               
+        (Optional) After adding SAs to the system, lock the root account:
+          
+               # passwd -l root
+
+9. Wireless  is disabled in a number of ways with Network Manager including:
+
+	a.) `nmcli radio all off` command in /etc/rc.local
+	b.) Dconf configurations to disable the creation of wireless networks:
+	
+		/etc/dconf/db/gdm.d/99-gnome-hardening
+			[org.gnome.nm-applet]
+			disable-wifi-create=true
+
+		/etc/dconf/db/gdm.d/locks/99-gnome-hardening
+			/org/gnome/nm-applet/disable-wifi-create
+	
+		/usr/share/glib-2.0/schemas/99_custom_settings.gschema.override
+			[org.gnome.nm-applet]
+			disable-wifi-create=true
+
+   Generally, wireless should not be used on a DoD/IC system.
+
+EXAMPLE
+=======
+
+# ./createiso.sh rhel-server-7.1-x86_64-dvd.iso 
+Mounting RHEL DVD Image...
+mount: /dev/loop0 is write-protected, mounting read-only
+Done.
+Copying RHEL DVD Image... Done.
+Modifying RHEL DVD Image... Done.
+Remastering RHEL DVD Image...
+I: -input-charset not specified, using utf-8 (detected in locale settings)
+Using RELEA000.HTM;1 for  /RELEASE-NOTES-ja-JP.html (RELEASE-NOTES-ta-IN.html)
+	<..........................................>
+Using POLIC003.RPM;1 for  ./Packages/policycoreutils-python-2.0.83-19.39.el6.x86_64.rpm (policycoreutils-newrole-2.0.83-19.39.el6.x86_64.rpm)
+Size of boot image is 4 sectors -> No emulation
+  0.27% done, estimate finish Tue Jan 21 22:04:41 2014
+	<...........................................>
+ 99.86% done, estimate finish Tue Jan 21 22:06:46 2014
+Total translation table size: 976326
+Total rockridge attributes bytes: 430528
+Total directory bytes: 661504
+Path table size(bytes): 286
+Max brk space used 3ee000
+1882600 extents written (3676 MB)
+Done.
+Signing RHEL DVD Image...
+Inserting md5sum into iso image...
+md5 = ec4618f4ccc6ccac3cfed291ef341012
+Inserting fragment md5sums into iso image...
+fragmd5 = e115ca49531d6adfee6caadeaf6a895cdc4c3e8b9341f58f5e11e9113a79
+frags = 20
+Setting supported flag to 0
+Done.
+DVD Created. [ssg-rhel-7.1.iso]
