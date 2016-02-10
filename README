@@ -23,12 +23,17 @@ into a single installer:
    - classification-banner.py (Python for displaying a graphical classification banner)
    
         https://github.com/RedHatGov/classification-banner
+        
+   - SCAP Security Guide (SSG) - Hardening Script for CentOS7
+   
+        https://github.com/openscap/scap-security-guide
+
 
 
 CONTENT
 =======
 
-createiso.sh - installation script to modify RHEL 7.1+ ISO image
+createiso.sh - installation script to modify CentOS 7.2+ ISO image
 
 /config - Kickstarts, Python, and RPMs needed to modify image.
 
@@ -79,9 +84,9 @@ createiso.sh - installation script to modify RHEL 7.1+ ISO image
 			overwriting the pam.d configurations. Copied to /root
 			after kickstart installation
 			
-		ssg-firefox.tar.gz
+		scap-security-guide-0.1.28.1.201602091119GITb9b262b-1.el7.centos.noarch.rpm
 		
-			SCAP Security Guide for implimenting DISA STIG on Firefox.
+			SCAP Security Guide for implimenting DISA STIG profile on CentOS and Firefox.
 
 HARDENING INFORMATION
 =====================
