@@ -587,6 +587,7 @@ class Display_Menu:
 			f.write('iptables\n')
 			f.write('iptables-services\n')
 			f.write('libvirt\n')
+			f.write('pciutils\n')
 			f.close()
 
 
