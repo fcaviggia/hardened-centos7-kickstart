@@ -699,4 +699,5 @@ timedatectl set-ntp false
 ######################################## 
 # Disable Kernel Dump Service 
 ######################################## 
-systemctl mask kdump.service 
+systemctl disable kdump.service 
+systemctl mask kdump.service
