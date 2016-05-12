@@ -42,4 +42,7 @@ if [ $(grep -c "umask 0022" /root/.bashrc) -eq 0 ]; then
 	echo "umask 0022" >> /root/.bashrc
 fi
 
+# install vdsm and dependancies
+/bin/yum install vdsm -y
+
 exit 0

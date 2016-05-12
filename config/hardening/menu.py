@@ -543,14 +543,14 @@ class Display_Menu:
 			f.close()
 			
 		################################################################################################################
-		# RHEV-Attached KVM Server
+		# Ovirt-Attached KVM Server
 		################################################################################################################
 		if int(self.system_profile.get_active()) == 2:
 			# WARNING - HARDENDING SCRIPT NOT RUN!
- 			self.MessageBox(self.window,"<b>Warning:</b> Please run the following script before adding system RHEV-M:\n\n   # /root/rhevm-preinstall.sh\n\nAfter adding the system to RHEV-M, run the following:\n\n   # /root/rhevm-postinstall.sh",gtk.MESSAGE_WARNING)
+ 			self.MessageBox(self.window,"<b>Warning:</b> Please run the following script before adding system to Ovirt Manager:\n\n   # /root/ovirt-preinstall.sh\n\nAfter adding the system to to Ovirt Manager, run the following:\n\n   # /root/ovirt-postinstall.sh",gtk.MESSAGE_WARNING)
 			# Partitioning
 			if self.disk_total < 60:
-				self.MessageBox(self.window,"<b>Recommended minimum of 60Gb disk space for a RHEV-Attached KVM Server Install!</b>\n\n You have "+str(self.disk_total)+"Gb available.",gtk.MESSAGE_WARNING)
+				self.MessageBox(self.window,"<b>Recommended minimum of 60Gb disk space for a Ovirt-Attached KVM Server Install!</b>\n\n You have "+str(self.disk_total)+"Gb available.",gtk.MESSAGE_WARNING)
 			self.opt_partition.set_value(0)
 			self.www_partition.set_value(0)
 			self.swap_partition.set_value(5)
@@ -568,8 +568,9 @@ class Display_Menu:
 			f = open('/tmp/hardening-post','w')
 			# Run Hardening Script
 			f.write('/usr/bin/oscap xccdf eval --profile '+str(self.profile)+' --remediate --results /root/`hostname`-ssg-results.xml /usr/share/xml/scap/ssg/content/ssg-centos7-ds.xml\n')
-			# RHEV Scripts for Pre-Install/Post-Install
-			f.write('cp /root/hardening/rhevm*.sh /root/\n')
+			# Ovirt Scripts for Pre-Install/Post-Install
+			f.write('cp /root/hardening/ovirt*.sh /root/\n')
+			f.write('yum localinstall -y /root/hardening/ovirt-release36.rpm\n')
 			# Firewall Configuration
 			f.write('cp /root/hardening/iptables.sh /root/\n')
 			f.write('/root/iptables.sh --kvm\n')
