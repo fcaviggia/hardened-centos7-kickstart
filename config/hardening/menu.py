@@ -138,7 +138,7 @@ class Display_Menu:
                 self.system_profile = gtk.combo_box_new_text()
 		self.system_profile.append_text("Minimal Installation")
 		self.system_profile.append_text("IPA Authentication Server")
-		self.system_profile.append_text("Ovirt-Attached KVM Server")
+		self.system_profile.append_text("Ovirt/KVM Server")
 		self.system_profile.append_text("User Workstation")
 		self.system_profile.append_text("Standalone KVM Server")
 		self.system_profile.set_active(0)
@@ -543,11 +543,11 @@ class Display_Menu:
 			f.close()
 			
 		################################################################################################################
-		# Ovirt-Attached KVM Server
+		# Ovirt KVM Server
 		################################################################################################################
 		if int(self.system_profile.get_active()) == 2:
 			# WARNING - HARDENDING SCRIPT NOT RUN!
- 			self.MessageBox(self.window,"<b>Warning:</b> Please run the following script before adding system to Ovirt Manager:\n\n   # /root/ovirt-preinstall.sh\n\nAfter adding the system to to Ovirt Manager, run the following:\n\n   # /root/ovirt-postinstall.sh",gtk.MESSAGE_WARNING)
+ 			self.MessageBox(self.window,"<b>Warning:</b>\n\nTo configure an Ovirt Manager run the following script:\n\n   # /root/ovirt-engine-install.sh\n\n\n\nTo configure a KVM hypervisor to attach to Ovirt Manager:\n\n   # /root/ovirt-kvm-preinstall.sh\n\nAfter adding the system to to Ovirt Manager, run the following:\n\n   # /root/ovirt-kvm-postinstall.sh",gtk.MESSAGE_WARNING)
 			# Partitioning
 			if self.disk_total < 60:
 				self.MessageBox(self.window,"<b>Recommended minimum of 60Gb disk space for a Ovirt-Attached KVM Server Install!</b>\n\n You have "+str(self.disk_total)+"Gb available.",gtk.MESSAGE_WARNING)
@@ -573,11 +573,15 @@ class Display_Menu:
 			f.write('yum localinstall -y /root/hardening/ovirt-release36.rpm\n')
 			# Firewall Configuration
 			f.write('cp /root/hardening/iptables.sh /root/\n')
-			f.write('/root/iptables.sh --kvm\n')
+			f.write('/root/iptables.sh\n')
 			f.write('systemctl mask firewalld\n')
 			f.write('systemctl stop firewalld\n')
 			f.write('systemctl enable iptables\n')
+			f.write('systemctl enable ip6tables\n')
+			f.write('systemctl enable ebtables\n')
 			f.write('systemctl start iptables\n')
+			f.write('systemctl start ip6tables\n')
+			f.write('systemctl start ebtables\n')
 			# Runlevel Configuration
 			f.write('systemctl set-default multi-user.target\n')
 			f.close()

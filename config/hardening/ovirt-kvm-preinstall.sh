@@ -15,7 +15,7 @@ fi
 
 echo -e "\033[3m\033[1mOvirt Pre-Install Script\033[0m\033[0m"
 echo
-echo -e "\033[1mThis script losens hardening settings to allow RHEV-M to attach a system.\033[0m"
+echo -e "\033[1mThis script losens hardening settings to allow Ovirt Manager to attach a system.\033[0m"
 echo
 echo -ne "\033[1mDo you want to continue?\033[0m [y/n]: "
 while read a; do
@@ -42,7 +42,11 @@ if [ $(grep -c "umask 0022" /root/.bashrc) -eq 0 ]; then
 	echo "umask 0022" >> /root/.bashrc
 fi
 
-# install vdsm and dependancies
+# Install vdsm and dependancies
 /bin/yum install vdsm -y
+
+# Configure firewall
+/root/iptables.sh --kvm
+systemctl restart iptables
 
 exit 0

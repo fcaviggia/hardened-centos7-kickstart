@@ -1,9 +1,9 @@
 #!/bin/sh
 # This script was written by Frank Caviggia
-# Last update was 2 June 2016
+# Last update was 12 May 2016
 #
 # Script: iptables.sh (system-hardening)
-# Description: RHEL 7 iptables/ebtables configuration for KVM and Ovirt-Attached profiles
+# Description: CentOS 7 iptables/ebtables configuration for KVM and Ovirt-Attached profiles
 # License: GPL
 # Copyright: Frank Caviggia, 2016
 # Author: Frank Caviggia <fcaviggi (at) gmail.com>
@@ -30,17 +30,17 @@ usage: $0 [options]
   --samba       Allows Samba Services (137,138/udp;139,445/tcp)
   --mysql	Allows MySQL (3306/tcp)
   --postgresql	Allows PostgreSQL (5432/tcp)
-  --kvm		Allows KVM Hypervisor (RHEV-attached)
-  --rhevm	Allows RHEV-M Specific Ports
+  --kvm		Allows KVM Hypervisor (Ovirt-attached)
+  --ovirt	Allows Ovirt Manager Specific Ports
   --ipa		Allows IPA/IdM Authentication Server
 
-Configures iptables firewall rules for RHEL.
+Configures iptables firewall rules for CentOS.
  
 EOF
 }
 
 # Get options
-OPTS=`getopt -o h --long http,https,dns,ldap,ldaps,kvm,rhevm,nfsv4,iscsi,idm,ipa,krb5,kerberos,rsyslog,dhcp,bootp,tftp,ntp,smb,samba,cifs,mysql,mariadb,postgres,postgresql,help -- "$@"`
+OPTS=`getopt -o h --long http,https,dns,ldap,ldaps,kvm,ovirt,nfsv4,iscsi,idm,ipa,krb5,kerberos,rsyslog,dhcp,bootp,tftp,ntp,smb,samba,cifs,mysql,mariadb,postgres,postgresql,help -- "$@"`
 if [ $? != 0 ]; then
 	exit 1
 fi
@@ -59,7 +59,7 @@ while true ; do
 	--ipa) KERBEROS=1 ; LDAP=1; LDAPS=1; DNS=1; NTP=1; HTTPS=1; shift ;;
 	--krb5) KERBEROS=1 ; shift ;;
 	--kvm) KVM=1 ; shift ;;
-	--rhevm) HTTPS=1; RHEVM=1 ; shift ;;
+	--ovirt) HTTPS=1; OVIRT=1 ; shift ;;
 	--iscsi) ISCSI=1 ; shift ;;
 	--nfsv4) NFSV4=1 ; shift ;;
 	--tftp) TFTP=1 ; shift ;;
@@ -250,11 +250,11 @@ cat <<EOF >> /etc/sysconfig/iptables
 EOF
 fi
 
-if [ ! -z $RHEVM ]; then
+if [ ! -z $OVIRT ]; then
 cat <<EOF >> /etc/sysconfig/iptables
-#### RHEVM (ActiveX Client)
+#### Ovirt Manager (ActiveX Client)
 -A INPUT -m state --state NEW -m tcp -p tcp --match multiport --dports 8006:8009 -j ACCEPT
-#### RHEVM (ActiveX Client)
+#### Ovirt Manager (ActiveX Client)
 -A INPUT -m state --state NEW -m tcp -p tcp --match multiport --dports 8006:8009 -j ACCEPT
 EOF
 fi

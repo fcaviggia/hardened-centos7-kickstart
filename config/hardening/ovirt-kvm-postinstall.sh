@@ -28,4 +28,10 @@ systemctl restart sshd.service
 # Remount /tmp Partition
 mount -o remount,defaults /tmp
 
+# Configure Firewall
+/root/iptables --kvm
+
+# Restart Firewall
+systemctl restart iptables
+
 exit 0
