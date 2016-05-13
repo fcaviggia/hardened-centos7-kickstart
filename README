@@ -2,7 +2,7 @@
 # Hardened CentOS 7 DVD CREATOR
 #
 # This script was written by Frank Caviggia
-# Last update was 9 Feb 2016
+# Last update was 13 May 2016
 #
 # Author: Frank Caviggia (fcaviggia@gmail.com)
 # Copyright: Frank Caviggia, (c) 2016
@@ -63,13 +63,19 @@ createiso.sh - installation script to modify CentOS 7.2+ ISO image
 			Additional system lockdowns (FIPS 140-2 Kernel Mode, GNOME,
 			wheel group for root access, etc.)
 
-		ovirt-preinstall.sh
-		ovirt-postinstall.sh
+		ovirt-engine-install.sh
+		
+			Script to install and configure Ovirt Manager.
+		
+		ovirt-kvm-preinstall.sh
+		ovirt-kvm-postinstall.sh
 
-			Scripts to loosen settings temporarily to allow registration
-			of the system with RHEV-M by allowing root login and allowing
-			exec in /tmp. Run rhevm-postinstall.sh after system is added
-			into RHEV-M. Copied to /root after kickstart install
+			Scripts to install Ovirt-Attached KVM hypervisor. Script 
+			will loosen settings temporarily to allow registration
+			of the system with Ovirt Manager by allowing root login and 
+			allowing exec in /tmp. Run rhevm-postinstall.sh after system 
+			is added into Ovirt Manager. Copied to /root after kickstart
+			install
 
 		iptables.sh (use with KVM and Ovirt hosts, uses iptables/ebtables)
 
@@ -84,7 +90,7 @@ createiso.sh - installation script to modify CentOS 7.2+ ISO image
 			overwriting the pam.d configurations. Copied to /root
 			after kickstart installation
 			
-		scap-security-guide-0.1.28.1.201602091119GITb9b262b-1.el7.centos.noarch.rpm
+		scap-security-guide-0.1xxxxxxxxxxxxxxxxxxxxxxxx.centos.noarch.rpm
 		
 			SCAP Security Guide for implimenting DISA STIG profile on CentOS and Firefox.
 
