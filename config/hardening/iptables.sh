@@ -1,6 +1,6 @@
 #!/bin/sh
 # This script was written by Frank Caviggia
-# Last update was 12 May 2016
+# Last update was 13 May 2016
 #
 # Script: iptables.sh (system-hardening)
 # Description: CentOS 7 iptables/ebtables configuration for KVM and Ovirt-Attached profiles
@@ -96,6 +96,10 @@ fi
 if [ ! -e /etc/sysconfig/iptables.orig ]; then
 	cp /etc/sysconfig/iptables /etc/sysconfig/iptables.orig
 fi
+if [ ! -e /etc/sysconfig/ip6tables.orig ]; then
+	cp /etc/sysconfig/ip6tables /etc/sysconfig/ip6tables.orig
+fi
+
 
 # Basic rule set - allows established/related pakets and SSH through firewall
 cat <<EOF > /etc/sysconfig/iptables
@@ -267,6 +271,180 @@ cat <<EOF >> /etc/sysconfig/iptables
 -A INPUT -p ICMP --icmp-type timestamp-reply -j DROP
 -A INPUT -j REJECT --reject-with icmp-host-prohibited
 -A FORWARD -j REJECT --reject-with icmp-host-prohibited
+COMMIT
+EOF
+
+# IPv6 Basic rule set - allows established/related pakets and SSH through firewall
+cat <<EOF > /etc/sysconfig/ip6tables
+#################################################################################################################
+# HARDENING SCRIPT IPTABLES Configuration
+#################################################################################################################
+*filter
+:INPUT DROP [0:0]
+:FORWARD DROP [0:0]
+:OUTPUT ACCEPT [0:0]
+# Allow Traffic that is established or related
+-A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+# Allow ICMP (Ping)
+-A INPUT -p ipv6-icmp -j ACCEPT
+# Allow Traffic on LOCALHOST/127.0.0.1
+-A INPUT -i lo -j ACCEPT
+#### SSH/SCP/SFTP
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 22 -j ACCEPT
+EOF
+
+if [ ! -z $DNS ]; then
+cat <<EOF >> /etc/sysconfig/ip6tables
+#### DNS Services (ISC BIND/IdM/IPA)
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 53 -j ACCEPT
+-A INPUT -m state --state NEW -m udp -p udp --dport 53 -j ACCEPT
+EOF
+fi
+
+if [ ! -z $DHCP ]; then
+cat <<EOF >> /etc/sysconfig/ip6tables
+#### DHCP Server
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 67 -j ACCEPT
+-A INPUT -m state --state NEW -m udp -p udp --dport 67 -j ACCEPT
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 68 -j ACCEPT
+-A INPUT -m state --state NEW -m udp -p udp --dport 68 -j ACCEPT
+EOF
+fi
+
+if [ ! -z $TFTP ]; then
+cat <<EOF >> /etc/sysconfig/ip6tables
+#### TFTP Server
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 69 -j ACCEPT
+-A INPUT -m state --state NEW -m udp -p udp --dport 69 -j ACCEPT
+EOF
+fi
+
+if [ ! -z $HTTP ]; then
+cat <<EOF >> /etc/sysconfig/ip6tables
+#### HTTPD - Recommend forwarding traffic to HTTPS 443
+####   Recommended Article: http://www.cyberciti.biz/tips/howto-apache-force-https-secure-connections.html
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 80 -j ACCEPT
+EOF
+fi
+
+if [ ! -z $KERBEROS ]; then
+cat <<EOF >> /etc/sysconfig/ip6tables
+#### Kerberos Authentication (IdM/IPA)
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 88 -j ACCEPT
+-A INPUT -m state --state NEW -m udp -p udp --dport 88 -j ACCEPT
+#### Kerberos Authentication - kpasswd (IdM/IPA)
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 464 -j ACCEPT
+-A INPUT -m state --state NEW -m udp -p udp --dport 464 -j ACCEPT
+EOF
+fi
+
+if [ ! -z $NTP ]; then
+cat <<EOF >> /etc/sysconfig/ip6tables
+#### NTP Server
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 123 -j ACCEPT
+-A INPUT -m state --state NEW -m udp -p udp --dport 123 -j ACCEPT
+EOF
+fi
+
+if [ ! -z $LDAP ]; then
+cat <<EOF >> /etc/sysconfig/ip6tables
+#### LDAP (IdM/IPA)
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 389 -j ACCEPT
+-A INPUT -m state --state NEW -m udp -p udp --dport 389 -j ACCEPT
+EOF
+fi
+
+if [ ! -z $HTTPS ]; then
+cat <<EOF >> /etc/sysconfig/ip6tables
+#### HTTPS
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 443 -j ACCEPT
+EOF
+fi
+
+if [ ! -z $RSYSLOG ]; then
+cat <<EOF >> /etc/sysconfig/ip6tables
+#### RSYSLOG Server
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 514 -j ACCEPT
+-A INPUT -m state --state NEW -m udp -p udp --dport 514 -j ACCEPT
+EOF
+fi
+
+if [ ! -z $LDAPS ]; then
+cat <<EOF >> /etc/sysconfig/ip6tables
+#### LDAPS - LDAP via SSL (IdM/IPA)
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 636 -j ACCEPT
+-A INPUT -m state --state NEW -m udp -p udp --dport 636 -j ACCEPT
+EOF
+fi
+
+if [ ! -z $NFSV4 ]; then
+cat <<EOF >> /etc/sysconfig/ip6tables
+#### NFSv4 Server
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 2049 -j ACCEPT
+EOF
+fi
+
+if [ ! -z $ISCSI ]; then
+cat <<EOF >> /etc/sysconfig/ip6tables
+#### iSCSI Server
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 3260 -j ACCEPT
+EOF
+fi
+
+if [ ! -z $POSTGRESQL ]; then
+cat <<EOF >> /etc/sysconfig/ip6tables
+#### PostgreSQL Server
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 5432 -j ACCEPT
+EOF
+fi
+
+if [ ! -z $MARIADB ]; then
+cat <<EOF >> /etc/sysconfig/ip6tables
+#### MariaDB/MySQL Server
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 3306 -j ACCEPT
+EOF
+fi
+
+if [ ! -z $SAMBA ]; then
+cat <<EOF >> /etc/sysconfig/ip6tables
+#### Samba/CIFS Server
+-A INPUT -m udp -p udp --dport 137 -j ACCEPT
+-A INPUT -m udp -p udp --dport 138 -j ACCEPT
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 139 -j ACCEPT
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 445 -j ACCEPT
+EOF
+fi
+
+if [ ! -z $KVM ]; then
+cat <<EOF >> /etc/sysconfig/ip6tables
+#### SPICE/VNC Client (KVM)
+-A INPUT -m state --state NEW -m tcp -p tcp --match multiport --dports 5634:6166 -j ACCEPT
+#### KVM Virtual Desktop and Server Manager (VDSM) Service
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 54321 -j ACCEPT
+#### KVM VM Migration
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 16514 -j ACCEPT
+-A INPUT -m state --state NEW -m tcp -p tcp --match multiport --dports 49152:49216 -j ACCEPT
+EOF
+fi
+
+if [ ! -z $OVIRT ]; then
+cat <<EOF >> /etc/sysconfig/ip6tables
+#### Ovirt Manager (ActiveX Client)
+-A INPUT -m state --state NEW -m tcp -p tcp --match multiport --dports 8006:8009 -j ACCEPT
+#### Ovirt Manager (ActiveX Client)
+-A INPUT -m state --state NEW -m tcp -p tcp --match multiport --dports 8006:8009 -j ACCEPT
+EOF
+fi
+
+cat <<EOF >> /etc/sysconfig/ip6tables
+#################################################################################################################
+# Limit Echo Requests - Prevents DoS attacks
+-A INPUT -p icmpv6 --icmpv6-type 128 -m limit --limit 900/min -m hl --hl-eq 255 -j ACCEPT
+-A OUTPUT -p icmpv6 --icmpv6-type 129 -m limit --limit 900/min -m hl --hl-eq 255 -j ACCEPT
+-A INPUT -p icmpv6 --icmpv6-type 128 -m limit --limit 900/min -m hl --hl-lt 255 -j DROP
+-A OUTPUT -p icmpv6 --icmpv6-type 129 -m limit --limit 900/min -m hl --hl-let 255 -j DROP
+-A INPUT -j REJECT --reject-with icmp6-adm-prohibited
+-A FORWARD -j REJECT --reject-with icmp6-adm-prohibited
 COMMIT
 EOF
 
