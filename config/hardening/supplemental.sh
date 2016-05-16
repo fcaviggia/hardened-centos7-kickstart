@@ -511,6 +511,7 @@ if [ $(grep " \/opt " ${FSTAB} | grep -c "nodev") -eq 0 ]; then
 	${SED} -i "s/\( \/opt.*${MNT_OPTS}\)/\1,nodev,nosuid/" ${FSTAB}
 fi
 
+
 ########################################
 # File Ownership 
 ########################################
