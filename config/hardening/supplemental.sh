@@ -510,7 +510,7 @@ if [ $(grep " \/opt " ${FSTAB} | grep -c "nodev") -eq 0 ]; then
 	MNT_OPTS=$(grep " \/opt " ${FSTAB} | awk '{print $4}')
 	${SED} -i "s/\( \/opt.*${MNT_OPTS}\)/\1,nodev,nosuid/" ${FSTAB}
 fi
-
+echo -e "tmpfs\t\t\t/dev/shm\t\ttmpfs\tnoexec,nosuid,nodev\t\t0 0" >> /etc/fstab
 
 ########################################
 # File Ownership 
