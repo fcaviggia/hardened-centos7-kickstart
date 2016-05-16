@@ -531,7 +531,7 @@ fi
 cat <<EOF > /etc/cron.weekly/aide-report
 #!/bin/sh
 # Generate Weekly AIDE Report
-`/usr/sbin/aide --check > /var/log/aide/reports/$(hostname)-aide-report-$(date +%Y%m%d).txt`
+\`/usr/sbin/aide --check > /var/log/aide/reports/\$(hostname)-aide-report-\$(date +%Y%m%d).txt\`
 EOF
 chown root:root /etc/cron.weekly/aide-report
 chmod 555 /etc/cron.weekly/aide-report
