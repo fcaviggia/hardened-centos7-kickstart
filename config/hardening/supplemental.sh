@@ -502,7 +502,14 @@ if [ $(grep " \/var " ${FSTAB} | grep -c "nodev") -eq 0 ]; then
 	MNT_OPTS=$(grep " \/var " ${FSTAB} | awk '{print $4}')
 	${SED} -i "s/\( \/var.*${MNT_OPTS}\)/\1,nodev,nosuid/" ${FSTAB}
 fi
-
+if [ $(grep " \/var\/www " ${FSTAB} | grep -c "nodev") -eq 0 ]; then
+	MNT_OPTS=$(grep " \/var\/wwww " ${FSTAB} | awk '{print $4}')
+	${SED} -i "s/\( \/var\/www.*${MNT_OPTS}\)/\1,nodev,nosuid/" ${FSTAB}
+fi
+if [ $(grep " \/opt " ${FSTAB} | grep -c "nodev") -eq 0 ]; then
+	MNT_OPTS=$(grep " \/opt " ${FSTAB} | awk '{print $4}')
+	${SED} -i "s/\( \/opt.*${MNT_OPTS}\)/\1,nodev,nosuid/" ${FSTAB}
+fi
 
 ########################################
 # File Ownership 
