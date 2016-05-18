@@ -710,6 +710,12 @@ fi
 /usr/sbin/prelink -ua
 
 ########################################
+# Kernel - Randomize Memory Space
+# CCE-27127-0, SC-30(2), 1.6.1
+########################################
+echo "kernel.randomize_va_space = 2" >> /etc/sysctl.conf
+
+########################################
 # Disable SystemD Date Service 
 # Use (chrony or ntpd)
 ########################################
