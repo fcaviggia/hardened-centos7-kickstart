@@ -124,16 +124,16 @@ ocredit = -1
 #
 # The minimum number of required classes of characters for the new
 # password (digits, uppercase, lowercase, others).
-minclass = 3
+minclass = 4
 #
 # The maximum number of allowed consecutive same characters in the new password.
 # The check is disabled if the value is 0.
-maxrepeat = 3
+maxrepeat = 2
 #
 # The maximum number of allowed consecutive characters of the same class in the
 # new password.
 # The check is disabled if the value is 0.
-# maxclassrepeat = 0
+maxclassrepeat = 2
 #
 # Whether to check for the words from the passwd entry GECOS string of the user.
 # The check is enabled if the value is not 0.
