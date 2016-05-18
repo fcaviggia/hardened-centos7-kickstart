@@ -1,6 +1,6 @@
 #!/bin/sh
 # This script was written by Frank Caviggia
-# Last update was 07 Feb 2016
+# Last update was 18 May 2016
 #
 # Script: suplemental.sh (system-hardening)
 # Description: Supplemental Hardening 
@@ -719,6 +719,12 @@ fi
 # CCE-27127-0, SC-30(2), 1.6.1
 ########################################
 echo "kernel.randomize_va_space = 2" >> /etc/sysctl.conf
+
+########################################
+# Kernel - Accept Source Routed Packets
+# AC-4, 366, SRG-OS-000480-GPOS-00227
+########################################
+echo "net.ipv6.conf.all.accept_source_route = 0" >> /etc/sysctl.conf
 
 ########################################
 # Disable SystemD Date Service 
