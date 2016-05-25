@@ -2,7 +2,7 @@
 # Hardened CentOS 7 DVD CREATOR
 #
 # This script was written by Frank Caviggia
-# Last update was 23 May 2016
+# Last update was 25 May 2016
 #
 # Author: Frank Caviggia (fcaviggia@gmail.com)
 # Copyright: Frank Caviggia, (c) 2016
@@ -119,6 +119,8 @@ in addition to the SSG:
 
 8. Create users:
 
+	NOTE: The root user is locked now - use 'admin' user account with sudo instead of root.
+
         Local Console Access Only (Unprivileged)
           
                # useradd -m -c "Local User" localuser
@@ -130,10 +132,7 @@ in addition to the SSG:
         System Administrator (SA) (Privileged User)
                
                # useradd -m -c "System Administrator" -G sshusers,wheel admin
-               
-        (Optional) After adding SAs to the system, lock the root account:
-          
-               # passwd -l root
+       	
 
 9. Wireless  is disabled in a number of ways with Network Manager including:
 
