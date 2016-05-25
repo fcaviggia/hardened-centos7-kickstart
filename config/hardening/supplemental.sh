@@ -349,13 +349,9 @@ ln -sf /dev/null /etc/systemd/system/ctrl-alt-del.target
 
 
 ########################################
-# Limit Root Login to Console
+# No Root Login to Console (use admin user)
 ########################################
-cat <<EOF > /etc/securetty
-console
-tty1
-EOF
-
+cat /dev/null > /etc/securetty
 
 ########################################
 # Disable Interactive Shell (Timeout)
