@@ -14,8 +14,11 @@
 ABOUT
 =====
 
-Modifies a CentOS 7.2+ (tested with CentOS-7-x86_64-DVD-1604-1.iso) x86_64 DVD with a kickstart that will install a system 
-that is configured and hardened to meet government regulations.
+Modifies a CentOS 7.2+ (tested with CentOS-7-x86_64-DVD-1604-1.iso) x86_64 DVD with a 
+kickstart that will install a system  that is configured and hardened to meet 
+government-level regulations.
+
+NOTE: ROOT ACCOUNT IS LOCKED WITH INSTALL USE 'admin' ACCOUNT WITH 'sudo' INSTEAD.
 
 The kickstart script involves the integration of the following projects 
 into a single installer:
