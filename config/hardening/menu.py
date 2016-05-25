@@ -2,7 +2,7 @@
 # Graphical Kickstart Script
 #
 # This script was written by Frank Caviggia
-# Last update was 07 February 2016
+# Last update was 25 May 2016
 #
 # Author: Frank Caviggia (fcaviggia@gmail.com)
 # Copyright: Frank Caviggia, (C) 2016
@@ -1009,9 +1009,10 @@ class Display_Menu:
 
 			# Write Kickstart Configuration
 			f = open('/tmp/hardening','w')
-			f.write('network --hostname '+self.hostname.get_text()+'\n')
-			f.write('rootpw --iscrypted '+str(self.password)+'\n')
+			f.write('network --hostname '+self.hostname.get_text()+' \n')
+			f.write('rootpw --iscrypted '+str(self.password)+' --lock\n')
 			f.write('bootloader --location=mbr --driveorder='+str(self.data["INSTALL_DRIVES"])+' --append="crashkernel=auto rhgb quiet audit=1" --password='+str(self.a)+'\n')
+			f.write('user --name=admin --groups=wheel --password='+str(self.password)+' --iscrypted \n')
 			f.close()
 			f = open('/tmp/partitioning','w')
 			if self.data["IGNORE_DRIVES"] != "":
