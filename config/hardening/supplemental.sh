@@ -415,6 +415,7 @@ done
 ########################################
 # SSHD Hardening
 ########################################
+sed -i '/Ciphers aes/d' /etc/ssh/sshd_config
 echo "Protocol 2" >> /etc/ssh/sshd_config
 echo "Ciphers aes128-ctr,aes192-ctr,aes256-ctr,aes128-cbc,3des-cbc,aes192-cbc,aes256-cbc" >> /etc/ssh/sshd_config
 echo "MACs hmac-sha2-512,hmac-sha2-256,hmac-sha1" >> /etc/ssh/sshd_config
