@@ -49,7 +49,7 @@ session [success=1 default=ignore] pam_succeed_if.so service in crond quiet use_
 session required pam_unix.so
 EOF
 ln -sf /etc/pam.d/system-auth-local /etc/pam.d/system-auth
-cp -f /etc/pam.d/system-auth-local /etc/system-auth-ac
+cp -f /etc/pam.d/system-auth-local /etc/pam.d/system-auth-ac
 
 cat <<EOF > /etc/pam.d/password-auth-local
 #%PAM-1.0
