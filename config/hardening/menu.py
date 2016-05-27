@@ -632,6 +632,7 @@ class Display_Menu:
 			f.write('@x-window-system\n')
 			f.write('liberation*\n')
 			f.write('dejavu*\n')
+			f.write('firewall-config\n')
 			f.write('gnome-classic-session\n')
 			f.write('gnome-terminal\n')
 			f.write('gnome-calculator\n')
