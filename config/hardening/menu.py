@@ -982,31 +982,30 @@ class Display_Menu:
 			self.password = crypt.crypt(self.passwd,self.salt)
 
 			# Write Classification Banner Settings
-			if int(self.system_profile.get_active()) == 1 or int(self.system_profile.get_active()) == 2:
-				f = open('/tmp/classification-banner','w')
-				f.write('message = "'+str(self.system_classification.get_active_text())+'"\n')
-				if int(self.system_classification.get_active()) == 0 or int(self.system_classification.get_active()) == 1:
-					f.write('fgcolor = "#000000"\n')
-					f.write('bgcolor = "#00CC00"\n')
-				elif int(self.system_classification.get_active()) == 2:
-					f.write('fgcolor = "#000000"\n')
-					f.write('bgcolor = "#33FFFF"\n')
-				elif int(self.system_classification.get_active()) == 3:
-					f.write('fgcolor = "#FFFFFF"\n')
-					f.write('bgcolor = "#FF0000"\n')
-				elif int(self.system_classification.get_active()) == 4:
-					f.write('fgcolor = "#FFFFFF"\n')
-					f.write('bgcolor = "#FF9900"\n')
-				elif int(self.system_classification.get_active()) == 5:
-					f.write('fgcolor = "#000000"\n')
-					f.write('bgcolor = "#FFFF00"\n')
-				elif int(self.system_classification.get_active()) == 6:
-					f.write('fgcolor = "#000000"\n')
-					f.write('bgcolor = "#FFFF00"\n')
-				else:
-					f.write('fgcolor = "#000000"\n')
-					f.write('bgcolor = "#FFFFFF"\n')
-				f.close()
+			f = open('/tmp/classification-banner','w')
+			f.write('message = "'+str(self.system_classification.get_active_text())+'"\n')
+			if int(self.system_classification.get_active()) == 0 or int(self.system_classification.get_active()) == 1:
+				f.write('fgcolor = "#000000"\n')
+				f.write('bgcolor = "#00CC00"\n')
+			elif int(self.system_classification.get_active()) == 2:
+				f.write('fgcolor = "#000000"\n')
+				f.write('bgcolor = "#33FFFF"\n')
+			elif int(self.system_classification.get_active()) == 3:
+				f.write('fgcolor = "#FFFFFF"\n')
+				f.write('bgcolor = "#FF0000"\n')
+			elif int(self.system_classification.get_active()) == 4:
+				f.write('fgcolor = "#FFFFFF"\n')
+				f.write('bgcolor = "#FF9900"\n')
+			elif int(self.system_classification.get_active()) == 5:
+				f.write('fgcolor = "#000000"\n')
+				f.write('bgcolor = "#FFFF00"\n')
+			elif int(self.system_classification.get_active()) == 6:
+				f.write('fgcolor = "#000000"\n')
+				f.write('bgcolor = "#FFFF00"\n')
+			else:
+				f.write('fgcolor = "#000000"\n')
+				f.write('bgcolor = "#FFFFFF"\n')
+			f.close()
 
 			# Write Kickstart Configuration
 			f = open('/tmp/hardening','w')
