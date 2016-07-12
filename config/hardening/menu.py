@@ -570,7 +570,7 @@ class Display_Menu:
 			f.write('/usr/bin/oscap xccdf eval --profile '+str(self.profile)+' --remediate --results /root/`hostname`-ssg-results.xml /usr/share/xml/scap/ssg/content/ssg-centos7-ds.xml\n')
 			# Ovirt Scripts for Pre-Install/Post-Install
 			f.write('cp /root/hardening/ovirt*.sh /root/\n')
-			f.write('yum localinstall -y /root/hardening/ovirt-release36.rpm\n')
+			f.write('yum localinstall -y /root/hardening/ovirt-release*.rpm\n')
 			# Firewall Configuration
 			f.write('cp /root/hardening/iptables.sh /root/\n')
 			f.write('/root/iptables.sh\n')
