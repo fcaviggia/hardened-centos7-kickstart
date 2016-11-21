@@ -369,8 +369,25 @@ set -r autologout
 EOF
 chown root:root /etc/profile.d/autologout.sh
 chown root:root /etc/profile.d/autologout.csh
-chmod 755 /etc/profile.d/autologout.sh
-chmod 755 /etc/profile.d/autologout.csh
+chmod 555 /etc/profile.d/autologout.sh
+chmod 555 /etc/profile.d/autologout.csh
+
+
+########################################
+# Set Shell UMASK Setting (027)
+########################################
+cat <<EOF > /etc/profile.d/umask.sh
+#!/bin/sh
+umask 027
+EOF
+cat <<EOF > /etc/profile.d/umask.csh
+#!/bin/csh
+umask 027
+EOF
+chown root:root /etc/profile.d/umask.sh
+chown root:root /etc/profile.d/umask.csh
+chmod 555 /etc/profile.d/umask.sh
+chmod 555 /etc/profile.d/umask.csh
 
 
 ########################################
