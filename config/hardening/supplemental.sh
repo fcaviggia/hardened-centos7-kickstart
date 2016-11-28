@@ -143,6 +143,7 @@ maxclassrepeat = 2
 # dictpath =
 EOF
 
+echo -e "FAIL_DELAY\t4" >> /etc/login.defs
 
 ########################################
 # STIG Audit Configuration
@@ -308,7 +309,7 @@ cat <<EOF > /etc/audit/rules.d/audit.rules
 #2.6.2.4.9 Ensure auditd Collects Information on the Use of Privileged Commands
 EOF
 # Find All privileged commands and monitor them
-for PROG in `find / -type f -perm -04000 -o -type f -perm -2000 2>/dev/null`; do
+for PROG in `find / -type f -perm -4000 -o -type f -perm -2000 2>/dev/null`; do
 	echo "-a always,exit -F path=$PROG -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged"  >> /etc/audit/rules.d/audit.rules
 done
 cat <<EOF >> /etc/audit/rules.d/audit.rules
@@ -359,8 +360,8 @@ cat /dev/null > /etc/securetty
 cat <<EOF > /etc/profile.d/autologout.sh
 #!/bin/sh
 TMOUT=900
-readonly TMOUT
 export TMOUT
+readonly TMOUT
 EOF
 cat <<EOF > /etc/profile.d/autologout.csh
 #!/bin/csh
