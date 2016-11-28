@@ -729,18 +729,6 @@ EOF
 fi
 
 ########################################
-# Disable Pre-Linking
-# CCE-27078-5
-########################################
-if grep -q ^PRELINKING /etc/sysconfig/prelink; then
-  sed -i 's/PRELINKING.*/PRELINKING=no/g' /etc/sysconfig/prelink
-else
-  echo -e "\n# Disable Pre-Linking (CCE-27078-5, CM-6(d), CM-6(3), SC-28, SI-7, Req-11.5)" >> /etc/sysconfig/prelink
-  echo "PRELINKING=no" >> /etc/sysconfig/prelink
-fi
-/usr/sbin/prelink -ua
-
-########################################
 # Kernel - Randomize Memory Space
 # CCE-27127-0, SC-30(2), 1.6.1
 ########################################
