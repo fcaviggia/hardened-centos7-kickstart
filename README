@@ -2,7 +2,7 @@
 # Hardened CentOS 7 DVD CREATOR
 #
 # This script was written by Frank Caviggia
-# Last update was 25 May 2016
+# Last update was 29 Nov 2016
 #
 # Author: Frank Caviggia (fcaviggia@gmail.com)
 # Copyright: Frank Caviggia, (c) 2016
@@ -14,9 +14,9 @@
 ABOUT
 =====
 
-Modifies a CentOS 7.2+ (tested with CentOS-7-x86_64-DVD-1604-1.iso) x86_64 DVD with a 
-kickstart that will install a system  that is configured and hardened to meet 
-government-level regulations.
+Modifies a CentOS 7.2+ (tested with CentOS-7-x86_64-DVD-1610-01.iso - rolling release) 
+x86_64 DVD with a kickstart that will install a system  that is configured and hardened
+to meet government-level regulations.
 
 NOTE: ROOT ACCOUNT IS LOCKED WITH INSTALL USE 'admin' ACCOUNT WITH 'sudo' INSTEAD.
 
@@ -93,9 +93,13 @@ createiso.sh - installation script to modify CentOS 7.2+ ISO image
 			overwriting the pam.d configurations. Copied to /root
 			after kickstart installation
 			
-		scap-security-guide-0.1xxxxxxxxxxxxxxxxxxxxxxxx.el7.noarch.rpm
+		scap-security-guide-*.el7.noarch.rpm
 		
 			SCAP Security Guide for implimenting DISA STIG profile on CentOS and Firefox.
+		
+		usbguard-*.x86_64.rpm
+		
+			USB guard will control what USB devices are accessible by the system.
 
 HARDENING INFORMATION
 =====================
