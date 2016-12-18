@@ -387,7 +387,7 @@ cat <<EOF > /etc/profile.d/umask.sh
 
 # Non-Privledged Users get 027
 # Privledged Users get 022
-if [[ $EUID -ne 0 ]]; then
+if [[ \$EUID -ne 0 ]]; then
 	umask 027
 else
 	umask 022
