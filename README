@@ -2,7 +2,7 @@
 # Hardened CentOS 7 DVD CREATOR
 #
 # This script was written by Frank Caviggia
-# Last update was 29 Nov 2016
+# Last update was 19 Dec 2016
 #
 # Author: Frank Caviggia (fcaviggia@gmail.com)
 # Copyright: Frank Caviggia, (c) 2016
@@ -14,7 +14,7 @@
 ABOUT
 =====
 
-Modifies a CentOS 7.2+ (tested with CentOS-7-x86_64-DVD-1610-01.iso - rolling release) 
+Modifies a CentOS 7.3+ (tested with CentOS-7-x86_64-DVD-1611.iso) 
 x86_64 DVD with a kickstart that will install a system  that is configured and hardened
 to meet government-level regulations.
 
