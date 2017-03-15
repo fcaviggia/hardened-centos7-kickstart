@@ -38,7 +38,7 @@ account [default=bad success=ok user_unknown=ignore] pam_sss.so
 account required pam_permit.so
 
 # Password Quality now set in /etc/security/pwquality.conf
-password required pam_pwqaulity.so retry=3
+password required pam_pwquality.so retry=3
 password sufficient pam_unix.so sha512 shadow try_first_pass use_authtok remember=24
 password sufficient pam_sss.so use_authtok
 password required pam_deny.so
@@ -76,7 +76,7 @@ account [default=bad success=ok user_unknown=ignore] pam_sss.so
 account required pam_permit.so
 
 # Password Quality now set in /etc/security/pwquality.conf
-password required pam_pwqaulity.so retry=3
+password required pam_pwquality.so retry=3
 password sufficient pam_unix.so sha512 shadow try_first_pass use_authtok remember=24
 password sufficient pam_sss.so use_authtok
 password required pam_deny.so
