@@ -747,6 +747,11 @@ echo "kernel.randomize_va_space = 2" >> /etc/sysctl.conf
 echo "net.ipv6.conf.all.accept_source_route = 0" >> /etc/sysctl.conf
 
 ########################################
+# Kernel - Disable TCP Timestamps
+#######################################
+echo "net.ipv4.tcp_timestamps = 0" >> /etc/sysctl.conf
+
+########################################
 # Disable SystemD Date Service 
 # Use (chrony or ntpd)
 ########################################
