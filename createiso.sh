@@ -110,13 +110,14 @@ echo "Remastering CentOS DVD Image..."
 cd $DIR/hardened-tmp
 chmod u+w isolinux/isolinux.bin
 find . -name TRANS.TBL -exec rm -f '{}' \; 
-genisoimage -l -r -J -V "CentOS 7 x86_64" -b isolinux/isolinux.bin -no-emul-boot -boot-load-size 4 -boot-info-table -c isolinux/boot.cat -o $DIR/hardened-centos7-x86_64.iso .
+genisoimage -l -r -J -V "CentOS 7 x86_64" -b isolinux/isolinux.bin -no-emul-boot -boot-load-size 4 -boot-info-table -c isolinux/boot.cat -o $DIR/hardened-centos7-x86_64.iso -eltorito-alt-boot -e images/efiboot.img -no-emul-boot .
 
 cd $DIR
 rm -rf $DIR/hardened-tmp
 echo "Done."
 
 echo "Signing CentOS DVD Image..."
+/usr/bin/isohybrid --uefi $DIR/hardened-centos7-x86_64.iso
 /usr/bin/implantisomd5 $DIR/hardened-centos7-x86_64.iso
 echo "Done."
 
