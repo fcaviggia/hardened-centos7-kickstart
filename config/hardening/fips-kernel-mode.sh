@@ -1,6 +1,6 @@
 #!/bin/sh
 # This script was written by Frank Caviggia
-# Last update was 07 Feb 2016
+# Last update was 8 April 2017
 #
 # Script: fips-kernel-mod.sh (system-hardening)
 # Description:Hardening - Configures kernel to FIPS mode
@@ -14,9 +14,6 @@
 sed -i 's/PRELINKING=yes/PRELINKING=no/g' /etc/sysconfig/prelink
 prelink -u -a
 dracut -f
-if [ -e /sys/firmware/efi ]; then
-	BOOT=`df /boot/efi | tail -1 | awk '{print $1 }'`
-else
-	BOOT=`df /boot | tail -1 | awk '{ print $1 }'`
-fi
+BOOT=$(df /boot | tail -1 | awk '{ print $1 }')
 /sbin/grubby --update-kernel=ALL --args="boot=${BOOT} fips=1"
+/usr/bin/sed -i "s/quiet/quiet boot=${BOOT} fips=1" /etc/default/grub

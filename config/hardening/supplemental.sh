@@ -1,6 +1,6 @@
 #!/bin/sh
 # This script was written by Frank Caviggia
-# Last update was 18 May 2016
+# Last update was 8 April 2017
 #
 # Script: suplemental.sh (system-hardening)
 # Description: Supplemental Hardening 
@@ -307,9 +307,16 @@ cat <<EOF > /etc/audit/rules.d/audit.rules
 -a always,exit -F arch=b64 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=4294967295 -k access
 
 #2.6.2.4.9 Ensure auditd Collects Information on the Use of Privileged Commands
+-a always,exit -F path=/usr/sbin/semanage -F perm=x -F auid>=1000 -F auid!=4294967295 -F key=privileged-priv_change
+-a always,exit -F path=/usr/sbin/setsebool -F perm=x -F auid>=1000 -F auid!=4294967295 -F key=privileged-priv_change
+-a always,exit -F path=/usr/bin/chcon -F perm=x -F auid>=1000 -F auid!=4294967295 -F key=privileged-priv_change
+-a always,exit -F path=/usr/sbin/restorecon -F perm=x -F auid>=1000 -F auid!=4294967295 -F key=privileged-priv_change
+-a always,exit -F path=/usr/bin/userhelper -F perm=x -F auid>=1000 -F auid!=4294967295 -F key=privileged
+-a always,exit -F path=/usr/bin/sudoedit -F perm=x -F auid>=1000 -F auid!=4294967295 -F key=privileged
+-a always,exit -F path=/usr/libexec/pt_chown -F perm=x -F auid>=1000 -F auid!=4294967295 -F key=privileged
 EOF
 # Find All privileged commands and monitor them
-for PROG in `find / -type f -perm -4000 -o -type f -perm -2000 2>/dev/null`; do
+for PROG in `find / -xdev -type f -perm -4000 -o -type f -perm -2000 2>/dev/null`; do
 	echo "-a always,exit -F path=$PROG -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged"  >> /etc/audit/rules.d/audit.rules
 done
 cat <<EOF >> /etc/audit/rules.d/audit.rules
@@ -434,21 +441,23 @@ echo -e "\n## Set timeout for authentiation (5 Minutes)\nDefaults:ALL timestamp_
 ########################################
 for DEVICE in $(/bin/lsblk | grep sr | awk '{ print $1 }'); do
 	mkdir -p /mnt/$DEVICE
-	echo -e "/dev/$DEVICE\t\t/mnt/$DEVICE\t\tiso9660\tdefaults,ro,noexec,noauto\t0 0" >> /etc/fstab
+	echo -e "/dev/$DEVICE\t\t/mnt/$DEVICE\t\tiso9660\tdefaults,ro,noexec,nosuid,nodev,noauto\t0 0" >> /etc/fstab
 done
 for DEVICE in $(cd /dev;ls *cd* *dvd*); do
 	mkdir -p /mnt/$DEVICE
-	echo -e "/dev/$DEVICE\t\t/mnt/$DEVICE\t\tiso9660\tdefaults,ro,noexec,noauto\t0 0" >> /etc/fstab
+	echo -e "/dev/$DEVICE\t\t/mnt/$DEVICE\t\tiso9660\tdefaults,ro,noexec,nosuid,nodev,noauto\t0 0" >> /etc/fstab
 done
 
 
 ########################################
 # SSHD Hardening
 ########################################
-sed -i '/Ciphers aes/d' /etc/ssh/sshd_config
+sed -i '/Ciphers.*/d' /etc/ssh/sshd_config
+sed -i '/MACs.*/d' /etc/ssh/sshd_config
+sed -i '/Protocol.*/d' /etc/ssh/sshd_config
 echo "Protocol 2" >> /etc/ssh/sshd_config
 echo "Ciphers aes128-ctr,aes192-ctr,aes256-ctr" >> /etc/ssh/sshd_config
-echo "MACs hmac-sha2-512,hmac-sha2-256,hmac-sha1" >> /etc/ssh/sshd_config
+echo "MACs hmac-sha2-512,hmac-sha2-256" >> /etc/ssh/sshd_config
 echo "PrintLastLog yes" >> /etc/ssh/sshd_config
 echo "AllowGroups sshusers" >> /etc/ssh/sshd_config
 echo "MaxAuthTries 3" >> /etc/ssh/sshd_config
@@ -560,28 +569,6 @@ find / -nogroup -print | xargs chown :root
 EOF
 chown root:root /etc/cron.daily/unowned_files
 chmod 0700 /etc/cron.daily/unowned_files
-
-
-########################################
-# AIDE Initialization
-########################################
-if [ ! -e /var/lib/aide/aide.db.gz ]; then
-	#FIPS MODE AIDE CONFIGURATION
-	sed -i 's/^NORMAL\s=.*/NORMAL = FIPSR+sha512/' /etc/aide.conf
-	echo "Initializing AIDE database, this step may take quite a while!"
-	/usr/sbin/aide --init &> /dev/null
-	echo "AIDE database initialization complete."
-	cp /var/lib/aide/aide.db.new.gz /var/lib/aide/aide.db.gz
-fi
-cat <<EOF > /etc/cron.weekly/aide-report
-#!/bin/sh
-# Generate Weekly AIDE Report
-\`/usr/sbin/aide --check | tee -a /var/log/aide/reports/\$(hostname)-aide-report-\$(date +%Y%m%d).txt | /bin/mail -s "\$(hostname) - AIDE Integrity Check" root@localhost\`
-EOF
-chown root:root /etc/cron.weekly/aide-report
-chmod 555 /etc/cron.weekly/aide-report
-mkdir -p /var/log/aide/reports
-chmod 700 /var/log/aide/reports
 
 
 ########################################
@@ -746,7 +733,23 @@ echo "kernel.randomize_va_space = 2" >> /etc/sysctl.conf
 ########################################
 echo "net.ipv6.conf.all.accept_source_route = 0" >> /etc/sysctl.conf
 
-########################################
+#######################################
+# Kernel - Disable Redirects
+#######################################
+echo "net.ipv4.conf.default.accept_redirects = 0" >> /etc/sysctl.conf
+echo "net.ipv4.conf.all.accept_redirects = 0" >> /etc/sysctl.conf
+
+#######################################
+# Kernel - Disable ICMP Broadcasts
+#######################################
+echo "net.ipv4.icmp_echo_ignore_broadcasts = 1" >> /etc/sysctl.conf
+
+#######################################
+# Kernel - Disable Syncookies
+#######################################
+echo "net.ipv4.tcp_syncookies = 1" >> /etc/sysctl.conf
+
+#######################################
 # Kernel - Disable TCP Timestamps
 #######################################
 echo "net.ipv4.tcp_timestamps = 0" >> /etc/sysctl.conf
@@ -762,3 +765,4 @@ timedatectl set-ntp false
 ######################################## 
 systemctl disable kdump.service 
 systemctl mask kdump.service
+

@@ -2,7 +2,7 @@
 # Graphical Kickstart Script
 #
 # This script was written by Frank Caviggia
-# Last update was 25 May 2016
+# Last update was 8 April 2017
 #
 # Author: Frank Caviggia (fcaviggia@gmail.com)
 # Copyright: Frank Caviggia, (C) 2016
@@ -112,7 +112,7 @@ class Display_Menu:
                 # Creates Information Message
                 self.label = gtk.Label('This DVD installs CentOS 7 in a hardened configuration.')
                 self.vbox.add(self.label)
-		self.label = gtk.Label('CentOS 7 (SSG DVD Installer v.0.8b)')
+		self.label = gtk.Label('CentOS 7 (SSG DVD Installer v.1.0)')
                 self.vbox.add(self.label)
 
                 # Blank Label
@@ -279,6 +279,11 @@ class Display_Menu:
 		self.fips_kernel = gtk.CheckButton('Kernel in FIPS 140-2 Mode')
 		self.fips_kernel.set_active(True)
 		self.encrypt.pack_start(self.fips_kernel, False, True, 0)
+
+                
+		self.nousb_kernel = gtk.CheckButton('Disable USB (nousb)')
+		self.nousb_kernel.set_active(False)
+		self.encrypt.pack_start(self.nousb_kernel, False, True, 0)
 
 		self.vbox.add(self.encrypt)
 
@@ -921,10 +926,24 @@ class Display_Menu:
         def apply_configuration(self,args):
 
 		# FIPS 140-2 Configuration
-		if self.fips_kernel.get_active() == True:			
+		if self.fips_kernel.get_active() == True:	
 			f = open('/tmp/hardening-post','a')
 			# Enable FIPS 140-2 mode in Kernel
 			f.write('\n/root/hardening/fips-kernel-mode.sh\n')
+			f.close()
+                else:
+			f = open('/tmp/hardening-post','a')
+			# Disable FIPS 140-2 mode in Kernel
+			f.write('\ngrubby --update-kernel=ALL --remove-args="fips=1"\n')
+			f.write('\n/usr/bin/sed -i "s/ fips=1//" /etc/defualt/grub\n')
+			f.close()
+
+		# Disable USB (nousb kernel option)
+		if self.fips_kernel.get_active() == False:		
+			f = open('/tmp/hardening-post','a')
+			# Disable nousb mode in Kernel
+			f.write('\ngrubby --update-kernel=ALL --remove-args="nousb"\n')
+			f.write('\n/usr/bin/sed -i "s/ nousb//" /etc/default/grub\n')
 			f.close()
 
 		# Set system password
@@ -1009,7 +1028,7 @@ class Display_Menu:
 			f = open('/tmp/hardening','w')
 			f.write('network --hostname '+self.hostname.get_text()+' \n')
 			f.write('rootpw --iscrypted '+str(self.password)+' --lock\n')
-			f.write('bootloader --location=mbr --driveorder='+str(self.data["INSTALL_DRIVES"])+' --append="crashkernel=auto rhgb quiet audit=1" --password='+str(self.a)+'\n')
+                        f.write('bootloader --location=mbr --driveorder='+str(self.data["INSTALL_DRIVES"])+' --append="crashkernel=auto rhgb quiet audit=1" --password='+str(self.a)+'\n')
 			f.write('user --name=admin --groups=wheel --password='+str(self.password)+' --iscrypted \n')
 			f.close()
 			f = open('/tmp/partitioning','w')
@@ -1023,7 +1042,7 @@ class Display_Menu:
 				f.write('part pv.01 --grow --size=200\n')
 			f.write('part /boot --fstype=xfs --size=1024\n')
 			f.write('volgroup vg1 --pesize=4096 pv.01\n')
-			if os.path.isfile('/sys/firmware/efi'):
+			if os.path.isdir('/sys/firmware/efi'):
 				f.write('part /boot/efi --fstype=efi --size=200\n')
 			f.write('logvol / --fstype=xfs --name=lv_root --vgname=vg1 --grow --percent='+str(self.root_partition.get_value_as_int())+'\n')
 			f.write('logvol /home --fstype=xfs --name=lv_home --vgname=vg1 --grow --percent='+str(self.home_partition.get_value_as_int())+'\n')
