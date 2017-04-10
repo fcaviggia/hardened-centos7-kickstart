@@ -2,7 +2,7 @@
 # Hardened CentOS 7 DVD CREATOR
 #
 # This script was written by Frank Caviggia
-# Last update was 19 Dec 2016
+# Last update was 10 April 2017
 #
 # Author: Frank Caviggia (fcaviggia@gmail.com)
 # Copyright: Frank Caviggia, (c) 2016
@@ -14,7 +14,7 @@
 ABOUT
 =====
 
-Modifies a CentOS 7.3+ (tested with CentOS-7-x86_64-DVD-1611.iso) 
+Modifies a CentOS 7.3+ (1611) (tested with CentOS-7-x86_64-DVD-1702-01.iso) 
 x86_64 DVD with a kickstart that will install a system  that is configured and hardened
 to meet government-level regulations.
 
@@ -110,7 +110,7 @@ in addition to the SSG:
 1. The kernel option for FIPS 140-2 mode is contained on the kickstart menu
 
 2. Shell timeout (bash/csh) is 15 minutes of inactivity, vlock will lock CLI
-   console
+   console (scripts are located under /etc/profile.d/autologout.{sh,csh})
 
 3. The 'wheel' group is required for privileged users (beyond root) to run 
    `su -` or `sudo -i` commands, sudo timeout is 5 minutes
