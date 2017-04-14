@@ -72,6 +72,13 @@ if [ $? -ne 0 ]; then
 	}
 fi
 
+which isohybrid &> /dev/null
+if [ $? -ne 0 ]; then
+	$SUDO yum install -y syslinux || $SUDO apt-get install -y syslinux || {
+		which syslinux || exit 1
+	}
+fi
+
 which implantisomd5 &> /dev/null
 if [ $? -ne 0 ]; then
 	$SUDO yum install -y isomd5sum || $SUDO apt-get install -y isomd5sum || {
@@ -117,7 +124,7 @@ rm -rf $DIR/hardened-tmp
 echo "Done."
 
 echo "Signing CentOS DVD Image..."
-/usr/bin/isohybrid --uefi $DIR/hardened-centos7-x86_64.iso
+/usr/bin/isohybrid --uefi $DIR/hardened-centos7-x86_64.iso &> /dev/null
 /usr/bin/implantisomd5 $DIR/hardened-centos7-x86_64.iso
 echo "Done."
 
