@@ -926,7 +926,7 @@ class Display_Menu:
         def apply_configuration(self,args):
 
 		# FIPS 140-2 Configuration
-		if self.fips_kernel.get_active() == True:	
+		if self.fips_kernel.get_active() == True:			
 			f = open('/tmp/hardening-post','a')
 			# Enable FIPS 140-2 mode in Kernel
 			f.write('\n/root/hardening/fips-kernel-mode.sh\n')
@@ -935,17 +935,23 @@ class Display_Menu:
 			f = open('/tmp/hardening-post','a')
 			# Disable FIPS 140-2 mode in Kernel
 			f.write('\ngrubby --update-kernel=ALL --remove-args="fips=1"\n')
-			f.write('\n/usr/bin/sed -i "s/ fips=1//" /etc/defualt/grub\n')
+			f.write('\n/usr/bin/sed -i "s/ fips=1//" /etc/default/grub\n')
 			f.close()
 
 		# Disable USB (nousb kernel option)
-		if self.fips_kernel.get_active() == False:		
+		if self.nousb_kernel.get_active() == True:
+			f = open('/tmp/hardening-post','a')
+			# Enable nousb mode in Kernel
+			f.write('\ngrubby --update-kernel=ALL --args="nousb"\n')
+			f.write('\n/usr/bin/sed -i "s/ quiet/quiet nousb/" /etc/default/grub\n')
+			f.close()
+		else:
 			f = open('/tmp/hardening-post','a')
 			# Disable nousb mode in Kernel
 			f.write('\ngrubby --update-kernel=ALL --remove-args="nousb"\n')
 			f.write('\n/usr/bin/sed -i "s/ nousb//" /etc/default/grub\n')
 			f.close()
-
+			
 		# Set system password
 		while True:
 			self.get_password(self.window)
