@@ -1004,6 +1004,9 @@ class Display_Menu:
 			self.salt = '$6$'+self.salt
 			self.password = crypt.crypt(self.passwd,self.salt)
 
+                        # Quote Password
+                        self.quoted_password = '"%s"' % self.passwd.replace('\\','\\\\').replace('"','\\"')
+
 			# Write Classification Banner Settings
 			f = open('/tmp/classification-banner','w')
 			f.write('message = "'+str(self.system_classification.get_active_text())+'"\n')
@@ -1034,7 +1037,7 @@ class Display_Menu:
 			f = open('/tmp/hardening','w')
 			f.write('network --hostname '+self.hostname.get_text()+' \n')
 			f.write('rootpw --iscrypted '+str(self.password)+' --lock\n')
-                        f.write('bootloader --location=mbr --driveorder='+str(self.data["INSTALL_DRIVES"])+' --append="crashkernel=auto rhgb quiet audit=1" --password='+str(self.a)+'\n')
+                        f.write('bootloader --location=mbr --driveorder='+str(self.data["INSTALL_DRIVES"])+' --append="crashkernel=auto rhgb quiet audit=1" --password='+self.quoted_password+'\n')
 			f.write('user --name=admin --groups=wheel --password='+str(self.password)+' --iscrypted \n')
 			f.close()
 			f = open('/tmp/partitioning','w')
@@ -1043,7 +1046,7 @@ class Display_Menu:
 			f.write('zerombr\n')
 			f.write('clearpart --all --drives='+str(self.data["INSTALL_DRIVES"])+'\n')
 			if self.encrypt_disk.get_active() == True:
-				f.write('part pv.01 --grow --size=200 --encrypted --cipher=\'aes-xts-plain64\' --passphrase='+str(self.passwd)+'\n')
+				f.write('part pv.01 --grow --size=200 --encrypted --cipher=\'aes-xts-plain64\' --passphrase='+self.quoted_password+'\n')
 			else:
 				f.write('part pv.01 --grow --size=200\n')
 			f.write('part /boot --fstype=xfs --size=1024\n')
