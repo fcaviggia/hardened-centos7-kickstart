@@ -8,7 +8,7 @@
 # Copyright: Frank Caviggia, (C) 2016
 # License: GPLv2
 
-import os,sys,re,crypt,random
+import os,sys,re,crypt,random,pyudev
 try:
 	os.environ['DISPLAY']
 	import pygtk,gtk
@@ -280,13 +280,17 @@ class Display_Menu:
 		self.fips_kernel.set_active(True)
 		self.encrypt.pack_start(self.fips_kernel, False, True, 0)
 
-                
 		self.nousb_kernel = gtk.CheckButton('Disable USB (nousb)')
 		self.nousb_kernel.set_active(False)
 		self.encrypt.pack_start(self.nousb_kernel, False, True, 0)
 
 		self.vbox.add(self.encrypt)
 
+		# By default, do not disable USB support if a USB keyboard is present
+		if any([device.parent.device_type==u'usb_interface' for device in pyudev.Context().list_devices(subsystem='input') if device.get('ID_INPUT_KEYBOARD', None)]):
+			self.nousb_kernel.set_active(False)
+		else:
+			self.nousb_kernel.set_active(True)
 
 		# Minimal Installation Warning
 		if self.disk_total < 8:
