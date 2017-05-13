@@ -40,6 +40,10 @@ createiso.sh - installation script to modify CentOS 7.2+ ISO image
 
 /config - Kickstarts, Python, and RPMs needed to modify image.
 
+	EFI/BOOT/
+	
+		grub.cfg - Menu Configuration for UEFI boot
+	
 	isolinux/
 
 		isolinux.cfg - Menu Configuration for Kickstart
