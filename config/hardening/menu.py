@@ -8,7 +8,7 @@
 # Copyright: Frank Caviggia, (C) 2016
 # License: GPLv2
 
-import os,sys,re,crypt,random
+import os,sys,re,crypt,random,pyudev
 try:
 	os.environ['DISPLAY']
 	import pygtk,gtk
@@ -280,13 +280,21 @@ class Display_Menu:
 		self.fips_kernel.set_active(True)
 		self.encrypt.pack_start(self.fips_kernel, False, True, 0)
 
-                
 		self.nousb_kernel = gtk.CheckButton('Disable USB (nousb)')
 		self.nousb_kernel.set_active(False)
 		self.encrypt.pack_start(self.nousb_kernel, False, True, 0)
 
+		self.lock_root = gtk.CheckButton('Lock root')
+		self.lock_root.set_active(True)
+		self.encrypt.pack_start(self.lock_root, False, True, 0)
+
 		self.vbox.add(self.encrypt)
 
+		# By default, do not disable USB support if a USB keyboard is present
+		if any([device.parent.device_type==u'usb_interface' for device in pyudev.Context().list_devices(subsystem='input') if device.get('ID_INPUT_KEYBOARD', None)]):
+			self.nousb_kernel.set_active(False)
+		else:
+			self.nousb_kernel.set_active(True)
 
 		# Minimal Installation Warning
 		if self.disk_total < 8:
@@ -965,7 +973,7 @@ class Display_Menu:
 					self.MessageBox(self.window,"<b>Password too short! 15 Characters Required.</b>",gtk.MESSAGE_ERROR)
 			else:
 				self.MessageBox(self.window,"<b>Passwords Don't Match!</b>",gtk.MESSAGE_ERROR)
-			
+
                 self.error = 0
 
 		if self.verify.check_hostname(self.hostname.get_text()) == False:
@@ -1004,6 +1012,9 @@ class Display_Menu:
 			self.salt = '$6$'+self.salt
 			self.password = crypt.crypt(self.passwd,self.salt)
 
+                        # Quote Password
+                        self.quoted_password = '"%s"' % self.passwd.replace('\\','\\\\').replace('"','\\"')
+
 			# Write Classification Banner Settings
 			f = open('/tmp/classification-banner','w')
 			f.write('message = "'+str(self.system_classification.get_active_text())+'"\n')
@@ -1033,8 +1044,8 @@ class Display_Menu:
 			# Write Kickstart Configuration
 			f = open('/tmp/hardening','w')
 			f.write('network --hostname '+self.hostname.get_text()+' \n')
-			f.write('rootpw --iscrypted '+str(self.password)+' --lock\n')
-                        f.write('bootloader --location=mbr --driveorder='+str(self.data["INSTALL_DRIVES"])+' --append="crashkernel=auto rhgb quiet audit=1" --password='+str(self.a)+'\n')
+			f.write('rootpw --iscrypted '+str(self.password)+(' --lock' if self.lock_root.get_active() == True else '')+'\n')
+                        f.write('bootloader --location=mbr --driveorder='+str(self.data["INSTALL_DRIVES"])+' --append="crashkernel=auto rhgb quiet audit=1" --password='+self.quoted_password+'\n')
 			f.write('user --name=admin --groups=wheel --password='+str(self.password)+' --iscrypted \n')
 			f.close()
 			f = open('/tmp/partitioning','w')
@@ -1043,7 +1054,7 @@ class Display_Menu:
 			f.write('zerombr\n')
 			f.write('clearpart --all --drives='+str(self.data["INSTALL_DRIVES"])+'\n')
 			if self.encrypt_disk.get_active() == True:
-				f.write('part pv.01 --grow --size=200 --encrypted --cipher=\'aes-xts-plain64\' --passphrase='+str(self.passwd)+'\n')
+				f.write('part pv.01 --grow --size=200 --encrypted --cipher=\'aes-xts-plain64\' --passphrase='+self.quoted_password+'\n')
 			else:
 				f.write('part pv.01 --grow --size=200\n')
 			f.write('part /boot --fstype=xfs --size=1024\n')
