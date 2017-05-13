@@ -1,6 +1,6 @@
 #!/bin/sh
 # This script was written by Frank Caviggia
-# Last update was 8 April 2017
+# Last update was 13 May 2017
 #
 # Script: suplemental.sh (system-hardening)
 # Description: Supplemental Hardening 
@@ -22,10 +22,10 @@ cat <<EOF > /etc/pam.d/system-auth-local
 #%PAM-1.0
 auth required pam_env.so
 auth required pam_lastlog.so inactive=35
-auth required pam_faillock.so preauth silent audit deny=3 even_deny_root root_unlock_time=900 unlock_time=604800 fail_interval=900
+auth required pam_faillock.so preauth silent audit deny=3 even_deny_root root_unlock_time=900 unlock_time=never fail_interval=900
 auth sufficient pam_unix.so try_first_pass
-auth [default=die] pam_faillock.so authfail audit deny=3 even_deny_root root_unlock_time=900 unlock_time=604800 fail_interval=900
-auth sufficient pam_faillock.so authsucc audit deny=3 even_deny_root root_unlock_time=900 unlock_time=604800 fail_interval=900
+auth [default=die] pam_faillock.so authfail audit deny=3 even_deny_root root_unlock_time=900 unlock_time=never fail_interval=900
+auth sufficient pam_faillock.so authsucc audit deny=3 even_deny_root root_unlock_time=900 unlock_time=never fail_interval=900
 auth requisite pam_succeed_if.so uid >= 1000 quiet
 auth required pam_deny.so
 
@@ -55,10 +55,10 @@ cat <<EOF > /etc/pam.d/password-auth-local
 #%PAM-1.0
 auth required pam_env.so
 auth required pam_lastlog.so inactive=35
-auth required pam_faillock.so preauth silent audit deny=3 even_deny_root root_unlock_time=900 unlock_time=604800 fail_interval=900
+auth required pam_faillock.so preauth silent audit deny=3 even_deny_root root_unlock_time=900 unlock_time=never fail_interval=900
 auth sufficient pam_unix.so try_first_pass
-auth [default=die] pam_faillock.so authfail audit deny=3 even_deny_root root_unlock_time=900 unlock_time=604800 fail_interval=900
-auth sufficient pam_faillock.so authsucc audit deny=3 even_deny_root root_unlock_time=900 unlock_time=604800 fail_interval=900
+auth [default=die] pam_faillock.so authfail audit deny=3 even_deny_root root_unlock_time=900 unlock_time=never fail_interval=900
+auth sufficient pam_faillock.so authsucc audit deny=3 even_deny_root root_unlock_time=900 unlock_time=never fail_interval=900
 auth requisite pam_succeed_if.so uid >= 1000 quiet
 auth required pam_deny.so
 
@@ -144,6 +144,22 @@ maxclassrepeat = 2
 EOF
 
 echo -e "FAIL_DELAY\t4" >> /etc/login.defs
+
+
+cat <<EOF > /etc/ntp.conf
+# by default act only as a basic NTP client
+restrict -4 default nomodify nopeer noquery notrap
+restrict -6 default nomodify nopeer noquery notrap
+# allow NTP messages from the loopback address, useful for debugging
+restrict 127.0.0.1
+restrict ::1
+# poll server at higher rate to prevent drift
+maxpoll 17
+# server(s) we time sync to
+##server 192.168.0.1
+##server 2001:DB9::1
+#server time.example.net
+EOF
 
 ########################################
 # STIG Audit Configuration
@@ -301,10 +317,10 @@ cat <<EOF > /etc/audit/rules.d/audit.rules
 -a always,exit -F arch=b64 -S setxattr -S lsetxattr -S fsetxattr -S removexattr -S lremovexattr -S fremovexattr -F auid>=1000 -F auid!=4294967295 -k perm_mod
 
 #2.6.2.4.8 Ensure auditd Collects Unauthorized Access Attempts to Files (unsuccessful)
--a always,exit -F arch=b32 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=4294967295 -k access
--a always,exit -F arch=b32 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=4294967295 -k access
--a always,exit -F arch=b64 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=4294967295 -k access
--a always,exit -F arch=b64 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=4294967295 -k access
+-a always,exit -F arch=b32 -S creat -S open -S openat -S open_by_handle_at -S truncate -S ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=4294967295 -k access
+-a always,exit -F arch=b32 -S creat -S open -S openat -S open_by_handle_at -S truncate -S ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=4294967295 -k access
+-a always,exit -F arch=b64 -S creat -S open -S openat -S open_by_handle_at -S truncate -S ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=4294967295 -k access
+-a always,exit -F arch=b64 -S creat -S open -S openat -S open_by_handle_at -S truncate -S ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=4294967295 -k access
 
 #2.6.2.4.9 Ensure auditd Collects Information on the Use of Privileged Commands
 -a always,exit -F path=/usr/sbin/semanage -F perm=x -F auid>=1000 -F auid!=4294967295 -F key=privileged-priv_change
@@ -452,11 +468,13 @@ done
 ########################################
 # SSHD Hardening
 ########################################
-sed -i '/Ciphers.*/d' /etc/ssh/sshd_config
-sed -i '/MACs.*/d' /etc/ssh/sshd_config
+sed -i '/Ciphers.*/d' /etc/ssh/ssh*config
+sed -i '/MACs.*/d' /etc/ssh/ssh*config
 sed -i '/Protocol.*/d' /etc/ssh/sshd_config
 echo "Protocol 2" >> /etc/ssh/sshd_config
+echo "Ciphers aes128-ctr,aes192-ctr,aes256-ctr" >> /etc/ssh/ssh_config
 echo "Ciphers aes128-ctr,aes192-ctr,aes256-ctr" >> /etc/ssh/sshd_config
+echo "MACs hmac-sha2-512,hmac-sha2-256" >> /etc/ssh/ssh_config
 echo "MACs hmac-sha2-512,hmac-sha2-256" >> /etc/ssh/sshd_config
 echo "PrintLastLog yes" >> /etc/ssh/sshd_config
 echo "AllowGroups sshusers" >> /etc/ssh/sshd_config
@@ -715,6 +733,24 @@ disable-all=true
 
 [org.gnome.nm-applet]
 disable-wifi-create=true
+EOF
+	cat << EOF > /etc/gdm/custom.conf
+# GDM configuration storage
+
+[daemon]
+AutomaticLoginEnable=false
+TimedLoginEnable=false
+
+[security]
+
+[xdmcp]
+
+[greeter]
+
+[chooser]
+
+[debug]
+
 EOF
 	cp /etc/dconf/db/gdm.d/locks/99-gnome-hardening /etc/dconf/db/local.d/locks/99-gnome-hardening
  	/bin/glib-compile-schemas /usr/share/glib-2.0/schemas/

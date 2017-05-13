@@ -2,7 +2,7 @@
 # Hardened CentOS 7 DVD CREATOR
 #
 # This script was written by Frank Caviggia
-# Last update was 10 April 2017
+# Last update was 13 May 2017
 #
 # Author: Frank Caviggia (fcaviggia@gmail.com)
 # Copyright: Frank Caviggia, (c) 2016
@@ -121,8 +121,9 @@ in addition to the SSG:
 5. Additional software such as McAfee EPo/HBSS may be required meet site 
    policy
 
-6. Configure NTP (/etc/chrony.conf) and rsyslog logging to remote server 
-   (/etc/rsyslog.conf)
+6. Configure PTP or NTP for time synchronization (/etc/chrony.conf or /etc/ntp.conf)
+
+7. Configure rsyslog to send logs to a centralized log monitoring. (/etc/rsyslog.conf)
 
 8. Create users:
 

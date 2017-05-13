@@ -2,7 +2,7 @@
 # Graphical Kickstart Script
 #
 # This script was written by Frank Caviggia
-# Last update was 8 April 2017
+# Last update was 13 May 2017
 #
 # Author: Frank Caviggia (fcaviggia@gmail.com)
 # Copyright: Frank Caviggia, (C) 2016
@@ -419,7 +419,7 @@ class Display_Menu:
 
 		## STOCK CONFIGURATIONS (Minimal Install)
 		# Default SSG Profile (DISA STIG)
-		self.profile='xccdf_org.ssgproject.content_profile_stig-rhel7-server-upstream'
+		self.profile='xccdf_org.ssgproject.content_profile_stig-rhel7-disa'
 		# Post Configuration (nochroot)
 		f = open('/tmp/hardening-post-nochroot','w')
 		f.write('')
@@ -469,7 +469,7 @@ class Display_Menu:
 
 		# Define SSG Security Profile
 		if int(self.system_security.get_active()) == 0:
-			self.profile='xccdf_org.ssgproject.content_profile_stig-rhel7-server-upstream'
+			self.profile='xccdf_org.ssgproject.content_profile_stig-rhel7-disa'
 
 		################################################################################################################
 		# Minimal (Defualts to Kickstart)
@@ -1050,17 +1050,17 @@ class Display_Menu:
 			f.write('volgroup vg1 --pesize=4096 pv.01\n')
 			if os.path.isdir('/sys/firmware/efi'):
 				f.write('part /boot/efi --fstype=efi --size=200\n')
-			f.write('logvol / --fstype=xfs --name=lv_root --vgname=vg1 --grow --percent='+str(self.root_partition.get_value_as_int())+'\n')
-			f.write('logvol /home --fstype=xfs --name=lv_home --vgname=vg1 --grow --percent='+str(self.home_partition.get_value_as_int())+'\n')
-			f.write('logvol /tmp --fstype=xfs --name=lv_tmp --vgname=vg1 --grow --percent='+str(self.tmp_partition.get_value_as_int())+'\n')
-			f.write('logvol /var --fstype=xfs --name=lv_var --vgname=vg1 --grow --percent='+str(self.var_partition.get_value_as_int())+'\n')
-			f.write('logvol /var/log --fstype=xfs --name=lv_log --vgname=vg1 --grow --percent='+str(self.log_partition.get_value_as_int())+'\n')
-			f.write('logvol /var/log/audit --fstype=xfs --name=lv_audit --vgname=vg1 --grow --percent='+str(self.audit_partition.get_value_as_int())+'\n')
-			f.write('logvol swap --fstype=swap --name=lv_swap --vgname=vg1 --maxsize=4096 --grow --percent='+str(self.swap_partition.get_value_as_int())+'\n')
+			f.write('logvol / --fstype=xfs --name=lv_root --vgname=vg1 --percent='+str(self.root_partition.get_value_as_int())+'\n')
+			f.write('logvol /home --fstype=xfs --name=lv_home --vgname=vg1 --percent='+str(self.home_partition.get_value_as_int())+'\n')
+			f.write('logvol /tmp --fstype=xfs --name=lv_tmp --vgname=vg1 --percent='+str(self.tmp_partition.get_value_as_int())+'\n')
+			f.write('logvol /var --fstype=xfs --name=lv_var --vgname=vg1 --percent='+str(self.var_partition.get_value_as_int())+'\n')
+			f.write('logvol /var/log --fstype=xfs --name=lv_log --vgname=vg1 --percent='+str(self.log_partition.get_value_as_int())+'\n')
+			f.write('logvol /var/log/audit --fstype=xfs --name=lv_audit --vgname=vg1 --percent='+str(self.audit_partition.get_value_as_int())+'\n')
+			f.write('logvol swap --fstype=swap --name=lv_swap --vgname=vg1 --maxsize=4096 --percent='+str(self.swap_partition.get_value_as_int())+'\n')
 			if self.opt_partition.get_value_as_int() >= 1:
-				f.write('logvol /opt --fstype=xfs --name=lv_opt --vgname=vg1 --grow --percent='+str(self.opt_partition.get_value_as_int())+'\n')
+				f.write('logvol /opt --fstype=xfs --name=lv_opt --vgname=vg1 --percent='+str(self.opt_partition.get_value_as_int())+'\n')
 			if self.www_partition.get_value_as_int() >= 1:
-				f.write('logvol /var/www --fstype=xfs --name=lv_www --vgname=vg1 --grow --percent='+str(self.www_partition.get_value_as_int())+'\n')
+				f.write('logvol /var/www --fstype=xfs --name=lv_www --vgname=vg1 --percent='+str(self.www_partition.get_value_as_int())+'\n')
 			f.close()
 			gtk.main_quit()
 
