@@ -164,11 +164,15 @@ EOF
 ########################################
 # STIG Audit Configuration
 ########################################
-cat <<EOF > /etc/audit/rules.d/audit.rules
-# DISA STIG Audit Rules
-## Add keys to the audit rules below using the -k option to allow for more 
-## organized and quicker searches with the ausearch tool.  See auditctl(8) 
-## and ausearch(8) for more information.
+cat <<EOF > /etc/audit/rules.d/zzz-supplemental.rules
+# augenrules is a script that merges all component audit rules files;
+# The last processed -D directive without an option, if present, is
+# always emitted as the first line in the resultant file. Those with an
+# option are replicated in place.  The last processed -b directive, if
+# present, is always emitted as the second line in the resultant file.
+# The last processed -f directive, if present, is always emitted as the
+# third line in the resultant file.  The last processed -e directive,
+# if present, is always emitted as the last line in the resultant file.
 
 # Remove any existing rules
 -D
@@ -178,6 +182,9 @@ cat <<EOF > /etc/audit/rules.d/audit.rules
 
 # Failure of auditd causes a kernel panic
 -f 2
+
+# Make the auditd Configuration Immutable
+-e 2
 
 ###########################
 ## DISA STIG Audit Rules ##
@@ -273,91 +280,40 @@ cat <<EOF > /etc/audit/rules.d/audit.rules
 ## NIST 800-53 Requirements ##
 ##############################
 
-#2.6.2.4.1 Records Events that Modify Date and Time Information
--a always,exit -F arch=b32 -S adjtimex -S stime -S settimeofday -k time-change
--a always,exit -F arch=b32 -S clock_settime -k time-change
--a always,exit -F arch=b64 -S adjtimex -S settimeofday -k time-change
--a always,exit -F arch=b64 -S clock_settime -k time-change
--w /etc/localtime -p wa -k time-change
-
-#2.6.2.4.2 Record Events that Modify User/Group Information
--w /etc/group -p wa -k identity
--w /etc/passwd -p wa -k identity
--w /etc/gshadow -p wa -k identity
--w /etc/shadow -p wa -k identity
--w /etc/security/opasswd -p wa -k identity
--w /etc/sudoers
-
-#2.6.2.4.3 Record Events that Modify the Systems Network Environment
--a always,exit -F arch=b32 -S sethostname -S setdomainname -k audit_network_modifications
--a always,exit -F arch=b64 -S sethostname -S setdomainname -k audit_network_modifications
--w /etc/issue -p wa -k audit_network_modifications
--w /etc/issue.net -p wa -k audit_network_modifications
--w /etc/hosts -p wa -k audit_network_modifications
--w /etc/sysconfig/network -p wa -k audit_network_modifications
-
-#2.6.2.4.4 Record Events that Modify the System Mandatory Access Controls
--w /etc/selinux/ -p wa -k MAC-policy
-
 #2.6.2.4.5 Ensure auditd Collects Logon and Logout Events
 -w /var/log/faillog -p wa -k logins
--w /var/log/lastlog -p wa -k logins
 
-#2.6.2.4.6 Ensure auditd Collects Process and Session Initiation Information
--w /var/run/utmp -p wa -k session
--w /var/log/btmp -p wa -k session
--w /var/log/wtmp -p wa -k session
-
-#2.6.2.4.7 Ensure auditd Collects Discretionary Access Control Permission Modification Events
--a always,exit -F arch=b32 -S chmod -S fchmod -S fchmodat -F auid>=1000 -F auid!=4294967295 -k perm_mod
--a always,exit -F arch=b32 -S chown -S fchown -S fchownat -S lchown -F auid>=1000 -F auid!=4294967295 -k perm_mod
--a always,exit -F arch=b32 -S setxattr -S lsetxattr -S fsetxattr -S removexattr -S lremovexattr -S fremovexattr -F auid>=1000 -F auid!=4294967295 -k perm_mod
--a always,exit -F arch=b64 -S chmod -S fchmod -S fchmodat -F auid>=1000 -F auid!=4294967295 -k perm_mod
--a always,exit -F arch=b64 -S chown -S fchown -S fchownat -S lchown -F auid>=1000 -F auid!=4294967295 -k perm_mod
--a always,exit -F arch=b64 -S setxattr -S lsetxattr -S fsetxattr -S removexattr -S lremovexattr -S fremovexattr -F auid>=1000 -F auid!=4294967295 -k perm_mod
-
-#2.6.2.4.8 Ensure auditd Collects Unauthorized Access Attempts to Files (unsuccessful)
--a always,exit -F arch=b32 -S creat -S open -S openat -S open_by_handle_at -S truncate -S ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=4294967295 -k access
--a always,exit -F arch=b32 -S creat -S open -S openat -S open_by_handle_at -S truncate -S ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=4294967295 -k access
--a always,exit -F arch=b64 -S creat -S open -S openat -S open_by_handle_at -S truncate -S ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=4294967295 -k access
--a always,exit -F arch=b64 -S creat -S open -S openat -S open_by_handle_at -S truncate -S ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=4294967295 -k access
-
-#2.6.2.4.9 Ensure auditd Collects Information on the Use of Privileged Commands
--a always,exit -F path=/usr/sbin/semanage -F perm=x -F auid>=1000 -F auid!=4294967295 -F key=privileged-priv_change
--a always,exit -F path=/usr/sbin/setsebool -F perm=x -F auid>=1000 -F auid!=4294967295 -F key=privileged-priv_change
--a always,exit -F path=/usr/bin/chcon -F perm=x -F auid>=1000 -F auid!=4294967295 -F key=privileged-priv_change
--a always,exit -F path=/usr/sbin/restorecon -F perm=x -F auid>=1000 -F auid!=4294967295 -F key=privileged-priv_change
--a always,exit -F path=/usr/bin/userhelper -F perm=x -F auid>=1000 -F auid!=4294967295 -F key=privileged
--a always,exit -F path=/usr/bin/sudoedit -F perm=x -F auid>=1000 -F auid!=4294967295 -F key=privileged
--a always,exit -F path=/usr/libexec/pt_chown -F perm=x -F auid>=1000 -F auid!=4294967295 -F key=privileged
 EOF
-# Find All privileged commands and monitor them
+# Find and monitor additional privileged commands
 for PROG in `find / -xdev -type f -perm -4000 -o -type f -perm -2000 2>/dev/null`; do
-	echo "-a always,exit -F path=$PROG -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged"  >> /etc/audit/rules.d/audit.rules
+	fgrep -r "path=$PROG" /etc/audit/rules.d/
+	if [ $? -ne 0 ]; then
+		echo "-a always,exit -F path=$PROG -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged"  >> /etc/audit/rules.d/zzz-supplemental.rules
+	fi
 done
-cat <<EOF >> /etc/audit/rules.d/audit.rules
 
-#2.6.2.4.10 Ensure auditd Collects Information on Exporting to Media (successful)
--a always,exit -F arch=b32 -S mount -F auid>=1000 -F auid!=4294967295 -k export
--a always,exit -F arch=b64 -S mount -F auid>=1000 -F auid!=4294967295 -k export
+# Sometimes the SSG leaves some rules in a file simply named ".rules".
+# This is also caused by the below mentioned "key" syntax mismatch.
+if [ -f /etc/audit/rules.d/.rules ]; then
+	# Some of the rules in the .rules file are invalid, this should
+	# be fixed in 0.1.34.
+	sed -i -e 's/EACCESS/EACCES/' /etc/audit/rules.d/.rules
+	sed -i -e 's/EPRM/EPERM/'     /etc/audit/rules.d/.rules
 
-#2.6.2.4.11 Ensure auditd Collects Files Deletion Events by User (successful and unsuccessful)
--a always,exit -F arch=b32 -S unlink -S rmdir -S unlinkat -S rename -S renameat -F auid>=1000 -F auid!=4294967295 -k delete
--a always,exit -F arch=b64 -S unlink -S rmdir -S unlinkat -S rename -S renameat -F auid>=1000 -F auid!=4294967295 -k delete
+	# Inconsistent syntax can lead to duplicate rules.  I'm told that:
+	# 'The "-F key=$key" is correct and should be the audit key syntax
+	# going forward. ... rather than moving backward to the -k syntax.'
+	# But, most of the existing rules use the "old" syntax as well as
+	# all of the STIG XCCDF content, so I'm normalizing that direction.
+	sed -i -e 's/-F key=/-k /'    /etc/audit/rules.d/.rules
+	sed -i -e 's/-F key=/-k /'    /etc/audit/rules.d/*.rules
 
-#2.6.2.4.12 Ensure auditd Collects System Administrator Actions
--w /etc/sudoers -p wa -k actions
-
-#2.6.2.4.13 Make the auditd Configuration Immutable
--w /sbin/insmod -p x -k modules
--w /sbin/rmmod -p x -k modules
--w /sbin/modprobe -p x -k modules
--a always,exit -F arch=b32 -S init_module -S delete_module -k modules
--a always,exit -F arch=b64 -S init_module -S delete_module -k modules
-
-#2.6.2.4.14 Make the auditd Configuration Immutable
--e 2
-EOF
+	# Some of the rules in the .rules file are duplicates (due to
+	# the above mentioned syntax mismatch).
+	sort /etc/audit/rules.d/.rules -o /etc/audit/rules.d/.rules
+	sort /etc/audit/rules.d/*.rules | comm -13 - /etc/audit/rules.d/.rules > /etc/audit/rules.d/ssg-orphaned.rules
+	rm /etc/audit/rules.d/.rules
+fi
 
 ########################################
 # Fix cron.allow
