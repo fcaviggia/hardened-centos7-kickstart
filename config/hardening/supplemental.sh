@@ -23,6 +23,8 @@ cat <<EOF > /etc/pam.d/system-auth-local
 auth required pam_env.so
 auth required pam_lastlog.so inactive=35
 auth required pam_faillock.so preauth silent audit deny=3 even_deny_root root_unlock_time=900 unlock_time=never fail_interval=900
+auth [success=1 default=ignore] pam_succeed_if.so service notin login:gdm:xdm:kdm:xscreensaver:gnome-screensaver:kscreensaver quiet use_uid
+auth [success=done authinfo_unavail=ignore ignore=ignore default=die] pam_pkcs11.so nodebug
 auth sufficient pam_unix.so try_first_pass
 auth [default=die] pam_faillock.so authfail audit deny=3 even_deny_root root_unlock_time=900 unlock_time=never fail_interval=900
 auth sufficient pam_faillock.so authsucc audit deny=3 even_deny_root root_unlock_time=900 unlock_time=never fail_interval=900
@@ -39,6 +41,7 @@ account required pam_permit.so
 # Password Quality now set in /etc/security/pwquality.conf
 password required pam_pwquality.so retry=3
 password sufficient pam_unix.so sha512 shadow try_first_pass use_authtok remember=24
+password optional pam_pkcs11.so
 password required pam_deny.so
 
 session required pam_lastlog.so showfailed
@@ -145,7 +148,11 @@ EOF
 
 echo -e "FAIL_DELAY\t4" >> /etc/login.defs
 
+## CAC Configurations
+authconfig --enablesmartcard --smartcardaction=0 --update
+sed -i 's/cert_policy.*/cert_policy = ca, ocsp_on, signature;/g' /etc/pam_pkcs11/pam_pkcs11.conf
 
+## Secured NTP Configuration
 cat <<EOF > /etc/ntp.conf
 # by default act only as a basic NTP client
 restrict -4 default nomodify nopeer noquery notrap
@@ -382,6 +389,16 @@ ln -sf /dev/null /etc/systemd/system/ctrl-alt-del.target
 # No Root Login to Console (use admin user)
 ########################################
 cat /dev/null > /etc/securetty
+
+
+########################################
+# SSSD Configuration
+########################################
+mkdir -p /etc/sssd
+cat <<EOF > /etc/sssd/sssd.conf
+[sssd]
+services = sudo, autofs, pam
+EOF
 
 ########################################
 # Disable Interactive Shell (Timeout)

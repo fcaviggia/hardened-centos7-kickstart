@@ -87,7 +87,7 @@ if [ $? -ne 0 ]; then
 fi
 
 # Determine if DVD is Bootable
-`file $1 | grep -q -e "9660.*boot" -e "x86 boot"`
+`file $1 | grep -q -e "9660.*boot" -e "x86 boot" -e "DOS/MBR boot"`
 if [[ $? -eq 0 ]]; then
 	echo "Mounting CentOS DVD Image..."
 	mkdir -p $DIR/original-mnt
