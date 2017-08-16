@@ -24,7 +24,7 @@ auth required pam_env.so
 auth required pam_lastlog.so inactive=35
 auth required pam_faillock.so preauth silent audit deny=3 even_deny_root root_unlock_time=900 unlock_time=never fail_interval=900
 auth [success=1 default=ignore] pam_succeed_if.so service notin login:gdm:xdm:kdm:xscreensaver:gnome-screensaver:kscreensaver quiet use_uid
-auth [success=done authinfo_unavail=ignore ignore=ignore default=die] pam_pkcs11.so nodebug
+#auth [success=done authinfo_unavail=ignore ignore=ignore default=die] pam_pkcs11.so nodebug
 auth sufficient pam_unix.so try_first_pass
 auth [default=die] pam_faillock.so authfail audit deny=3 even_deny_root root_unlock_time=900 unlock_time=never fail_interval=900
 auth sufficient pam_faillock.so authsucc audit deny=3 even_deny_root root_unlock_time=900 unlock_time=never fail_interval=900
