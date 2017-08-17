@@ -1,6 +1,6 @@
 #!/bin/sh
 # This script was written by Frank Caviggia
-# Last update was 8 April 2017
+# Last update was 17 August 2017
 #
 # Script: fips-kernel-mod.sh (system-hardening)
 # Description:Hardening - Configures kernel to FIPS mode
@@ -11,9 +11,9 @@
 ########################################
 # FIPS 140-2 Kernel Mode
 ########################################
-sed -i 's/PRELINKING=yes/PRELINKING=no/g' /etc/sysconfig/prelink
-prelink -u -a
+rpm -q prelink && sed -i '/^PRELINKING/s,yes,no,' /etc/sysconfig/prelink
+rpm -q prelink && prelink -ua
 dracut -f
-BOOT=$(df /boot | tail -1 | awk '{ print $1 }')
+BOOT="UUID=$(findmnt -no uuid /boot)"
 /sbin/grubby --update-kernel=ALL --args="boot=${BOOT} fips=1"
 /usr/bin/sed -i "s/quiet/quiet boot=${BOOT} fips=1" /etc/default/grub
