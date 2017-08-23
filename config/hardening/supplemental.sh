@@ -50,6 +50,7 @@ session required pam_unix.so
 EOF
 ln -sf /etc/pam.d/system-auth-local /etc/pam.d/system-auth
 cp -f /etc/pam.d/system-auth-local /etc/pam.d/system-auth-ac
+chattr +i /etc/pam.d/system-auth-local
 
 cat <<EOF > /etc/pam.d/password-auth-local
 #%PAM-1.0
@@ -83,6 +84,7 @@ session required pam_unix.so
 EOF
 ln -sf /etc/pam.d/password-auth-local /etc/pam.d/password-auth
 cp -f /etc/pam.d/password-auth-local /etc/pam.d/password-auth-ac
+chattr +i /etc/pam.d/password-auth-local
 
 cat <<EOF > /etc/security/pwquality.conf
 # Configuration for systemwide password quality limits
@@ -449,8 +451,8 @@ alias vlock 'clear;vlock -a'
 EOF
 chown root:root /etc/profile.d/vlock-alias.sh
 chown root:root /etc/profile.d/vlock-alias.csh
-chmod 755 /etc/profile.d/vlock-alias.sh
-chmod 755 /etc/profile.d/vlock-alias.csh
+chmod 555 /etc/profile.d/vlock-alias.sh
+chmod 555 /etc/profile.d/vlock-alias.csh
 
 
 ########################################

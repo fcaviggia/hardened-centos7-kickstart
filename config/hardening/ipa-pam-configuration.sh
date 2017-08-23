@@ -17,6 +17,7 @@ if [ ! -e /etc/pam.d/password-auth-local.orig ]; then
 fi
 
 # Deploy Configuruation
+chattr -i /etc/pam.d/system-auth-local
 cat <<EOF > /etc/pam.d/system-auth-local
 #%PAM-1.0
 auth required pam_env.so
@@ -53,8 +54,10 @@ session required pam_unix.so
 session optional pam_sss.so
 EOF
 ln -sf /etc/pam.d/system-auth-local /etc/pam.d/system-auth
+cp -f /etc/pam.d/system-auth-local /etc/pam.d/system-auth-ac
+chattr +i /etc/pam.d/system-auth-local
 
-
+chattr -i /etc/pam.d/password-auth-local
 cat <<EOF > /etc/pam.d/password-auth-local
 #%PAM-1.0
 auth required pam_env.so
@@ -91,5 +94,7 @@ session required pam_unix.so
 session optional pam_sss.so
 EOF
 ln -sf /etc/pam.d/password-auth-local /etc/pam.d/password-auth
+cp -f /etc/pam.d/password-auth-local /etc/pam.d/password-auth-ac
+chattr +i /etc/pam.d/password-auth-local
 
 exit 0
