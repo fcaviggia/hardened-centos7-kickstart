@@ -1023,22 +1023,22 @@ class Display_Menu:
 				f.write('bgcolor = "#007A33"\n')
 			elif int(self.system_classification.get_active()) == 2:
 				f.write('fgcolor = "#FFFFFF"\n')
-				f.write('bgcolor = "#007A33"\n')
+				f.write('bgcolor = "#0033A0"\n')
 			elif int(self.system_classification.get_active()) == 3:
 				f.write('fgcolor = "#FFFFFF"\n')
-				f.write('bgcolor = "#0033A0"\n')
+				f.write('bgcolor = "#C8102E"\n')
 			elif int(self.system_classification.get_active()) == 4:
 				f.write('fgcolor = "#FFFFFF"\n')
-				f.write('bgcolor = "#C8102E"\n')
+				f.write('bgcolor = "#FF671F"\n')
 			elif int(self.system_classification.get_active()) == 5:
 				f.write('fgcolor = "#FFFFF"\n')
-				f.write('bgcolor = "#FF671F"\n')
+				f.write('bgcolor = "#F7EA48"\n')
 			elif int(self.system_classification.get_active()) == 6:
 				f.write('fgcolor = "#000000"\n')
 				f.write('bgcolor = "#F7EA48"\n')
 			else:
-				f.write('fgcolor = "#000000"\n')
-				f.write('bgcolor = "#F7EA48"\n')
+				f.write('fgcolor = "#FFFFFF"\n')
+				f.write('bgcolor = "#007A33"\n')
 			f.close()
 
 			# Write Kickstart Configuration
