@@ -145,8 +145,6 @@ maxclassrepeat = 2
 # dictpath =
 EOF
 
-echo -e "FAIL_DELAY\t4" >> /etc/login.defs
-
 ## Secured NTP Configuration
 cat <<EOF > /etc/ntp.conf
 # by default act only as a basic NTP client
