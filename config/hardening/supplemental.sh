@@ -49,7 +49,7 @@ session [success=1 default=ignore] pam_succeed_if.so service in crond quiet use_
 session required pam_unix.so
 EOF
 ln -sf /etc/pam.d/system-auth-local /etc/pam.d/system-auth
-cp -f /etc/pam.d/system-auth-local /etc/pam.d/system-auth-ac
+cat /etc/pam.d/system-auth-local > /etc/pam.d/system-auth-ac
 chattr +i /etc/pam.d/system-auth-local
 
 cat <<EOF > /etc/pam.d/password-auth-local
@@ -83,7 +83,7 @@ session [success=1 default=ignore] pam_succeed_if.so service in crond quiet use_
 session required pam_unix.so
 EOF
 ln -sf /etc/pam.d/password-auth-local /etc/pam.d/password-auth
-cp -f /etc/pam.d/password-auth-local /etc/pam.d/password-auth-ac
+cat /etc/pam.d/password-auth-local > /etc/pam.d/password-auth-ac
 chattr +i /etc/pam.d/password-auth-local
 
 cat <<EOF > /etc/security/pwquality.conf
