@@ -4,8 +4,8 @@
 #
 # Script: fips-kernel-mod.sh (system-hardening)
 # Description:Hardening - Configures kernel to FIPS mode
-# License: GPLv2
-# Copyright: Frank Caviggia, 2016
+# License: Apache License, Version 2.0
+# Copyright: Frank Caviggia, 2018
 # Author: Frank Caviggia <fcaviggia (at) gmail.com>
 
 ########################################

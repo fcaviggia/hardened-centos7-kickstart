@@ -4,8 +4,8 @@
 #
 # Script: iptables.sh (system-hardening)
 # Description: CentOS 7 iptables/ebtables configuration for KVM and Ovirt-Attached profiles
-# License: GPL
-# Copyright: Frank Caviggia, 2016
+# License: Apache License, Version 2.0
+# Copyright: Frank Caviggia, 2018
 # Author: Frank Caviggia <fcaviggi (at) gmail.com>
 
 # USAGE STATEMENT

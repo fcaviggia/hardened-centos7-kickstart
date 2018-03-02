@@ -6,9 +6,9 @@
 # Last update was 16 September 2017
 #
 # Author: Frank Caviggia (fcaviggia@gmail.com)
-# Copyright: Frank Caviggia, (c) 2017
+# Copyright: Frank Caviggia, (c) 2018
 # Version: 1.3
-# License: GPLv2
+# License: Apache License, Version 2.0
 # Description: Creates embedded kickstart from CentOS ISO that can preform
 #              a hardened installation based on DISA STIG
 ###############################################################################

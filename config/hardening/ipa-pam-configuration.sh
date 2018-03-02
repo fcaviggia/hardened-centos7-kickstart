@@ -4,8 +4,8 @@
 #
 # Script: ipa-pam-configuration.sh (system-hardening)
 # Description: RHEL 7 Hardening Supplemental to SSG, configures PAM with sssd if system is registered with IdM.
-# License: GPLv2
-# Copyright: Frank Caviggia, 2016
+# License: Apache License, Version 2.0
+# Copyright: Frank Caviggia, 2018
 # Author: Frank Caviggia <fcaviggia (at) gmail.com>
 
 # Backup originial configuration

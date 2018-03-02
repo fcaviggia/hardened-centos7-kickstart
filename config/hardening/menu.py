@@ -5,8 +5,8 @@
 # Last update was 13 May 2017
 #
 # Author: Frank Caviggia (fcaviggia@gmail.com)
-# Copyright: Frank Caviggia, (C) 2016
-# License: GPLv2
+# Copyright: Frank Caviggia, (C) 2018
+# License: Apache License, Version 2.0
 
 import os,sys,re,crypt,random,pyudev
 try:

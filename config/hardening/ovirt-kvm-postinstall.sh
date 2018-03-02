@@ -4,8 +4,8 @@
 #
 # Script: ovirt-postinstall.sh
 # Description: Losens Hardening settings temporarily to allow registration with RHEVM 3.x
-# License: GPLv2
-# Copyright: Frank Caviggia, 2016
+# License: Apache License, Version 2.0
+# Copyright: Frank Caviggia, 2018
 
 # Check for root user
 if [[ $EUID -ne 0 ]]; then

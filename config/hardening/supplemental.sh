@@ -4,8 +4,8 @@
 #
 # Script: suplemental.sh (system-hardening)
 # Description: Supplemental Hardening 
-# License: GPLv2
-# Copyright: Frank Caviggia, 2016
+# License: Apache License, Version 2.0
+# Copyright: Frank Caviggia, 2018
 # Author: Frank Caviggia <fcaviggi (at) gmail.com>
 
 ########################################
