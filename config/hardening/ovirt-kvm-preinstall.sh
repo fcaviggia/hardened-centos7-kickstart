@@ -42,11 +42,21 @@ if [ $(grep -c "umask 0022" /root/.bashrc) -eq 0 ]; then
 	echo "umask 0022" >> /root/.bashrc
 fi
 
+# Fix Settings in /etc/yum.conf
+sed -i "s/gpgcheck=1/gpgcheck=0/g" /etc/yum.conf
+sed -i "s/localpkg_gpgcheck=1/localpkg_gpgcheck=0/g" /etc/yum.conf
+sed -i "s/repo_gpgcheck=1/repo_gpgcheck=0/g" /etc/yum.conf
+
 # Install vdsm and dependancies
 /bin/yum install vdsm -y
 
 # Configure firewall
 /root/iptables.sh --kvm
 systemctl restart iptables
+
+# Restore Settings in /etc/yum.conf
+sed -i "s/gpgcheck=0/gpgcheck=1/g" /etc/yum.conf
+sed -i "s/localpkg_gpgcheck=0/localpkg_gpgcheck=1/g" /etc/yum.conf
+sed -i "s/repo_gpgcheck=0/repo_gpgcheck=1/g" /etc/yum.conf
 
 exit 0
