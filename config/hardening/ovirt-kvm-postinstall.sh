@@ -29,7 +29,7 @@ systemctl restart sshd.service
 mount -o remount,defaults /tmp
 
 # Configure Firewall
-/root/iptables --kvm
+/root/iptables.sh --kvm
 
 # Restart Firewall
 systemctl restart iptables
