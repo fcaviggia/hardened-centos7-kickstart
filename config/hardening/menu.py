@@ -581,6 +581,7 @@ class Display_Menu:
 			f = open('/tmp/hardening-post','w')
 			# Ovirt Scripts for Pre-Install/Post-Install
 			f.write('cp /root/hardening/ovirt*.sh /root/\n')
+			f.write('rpm --import /root/hardening/RPM-GPG-ovirt-v2\n')
 			f.write('yum localinstall -y /root/hardening/ovirt-release*.rpm\n')
 			# Run Hardening Script
 			f.write('/usr/bin/oscap xccdf eval --profile '+str(self.profile)+' --remediate --results /root/`hostname`-ssg-results.xml /usr/share/xml/scap/ssg/content/ssg-centos7-ds.xml\n')
