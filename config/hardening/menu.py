@@ -26,7 +26,7 @@ class Verification:
 		else:
 			return False
 
-	# Check for vaild Unix username
+	# Check for valid Unix username
 	def check_username(self,username):
 		pattern = re.compile(r"^\w{5,255}$",re.VERBOSE)
 		if re.match(pattern,username):
@@ -34,7 +34,7 @@ class Verification:
 		else:
 			return False
 
-	# Check for vaild Unix UID
+	# Check for valid Unix UID
 	def check_uid(self,uid):
 		pattern = re.compile(r"^\d{1,10}$",re.VERBOSE)
 		if re.match(pattern,uid):
@@ -42,7 +42,7 @@ class Verification:
 		else:
 			return False
 
-	# Check for vaild IP address
+	# Check for valid IP address
 	def check_ip(self,ip):
 		pattern = re.compile(r"\b(([01]?\d?\d|2[0-4]\d|25[0-5])\.){3}([01]?\d?\d|2[0-4]\d|25[0-5])\b",re.VERBOSE)
 		if re.match(pattern,ip) and ip != "0.0.0.0":
@@ -50,7 +50,7 @@ class Verification:
 		else:
 			return False
 
-        # Check for vaild system hostanme
+        # Check for valid system hostname
         def check_hostname(self,hostname):
                 pattern = re.compile(r"^[a-zA-Z0-9\-\.]{1,100}$",re.VERBOSE)
                 if re.match(pattern,hostname):
@@ -63,7 +63,7 @@ class Verification:
 class Display_Menu:
         def __init__(self):
 
-		# Initalize Additional Configuration Files
+		# Initialize Additional Configuration Files
 		f = open('/tmp/hardening-post','w')
 		f.write('')
 		f.close()
@@ -79,7 +79,7 @@ class Display_Menu:
 
                 # Create Main Window
                 self.window = gtk.Window()
-                self.window.set_title("CentOS 7 - Hardend Kickstart Installation")
+                self.window.set_title("CentOS 7 - Hardened Kickstart Installation")
                 self.window.set_position(gtk.WIN_POS_CENTER)
 		self.window.connect("delete_event",gtk.main_quit)
 		self.display = gtk.gdk.display_get_default()
@@ -121,7 +121,7 @@ class Display_Menu:
 
 		# System Configuration
                 self.system = gtk.HBox()
-                self.label = gtk.Label("   Hostame: ")
+                self.label = gtk.Label("   Hostname: ")
                 self.system.pack_start(self.label,False,True, 0)
                 self.hostname = gtk.Entry(100)
 		self.hostname.set_size_request(225,-1)
@@ -480,7 +480,7 @@ class Display_Menu:
 			self.profile='xccdf_org.ssgproject.content_profile_stig-rhel7-disa'
 
 		################################################################################################################
-		# Minimal (Defualts to Kickstart)
+		# Minimal (Defaults to Kickstart)
 		################################################################################################################
 		if int(self.system_profile.get_active()) == 0:
 			# Partitioning
@@ -559,7 +559,7 @@ class Display_Menu:
 		# Ovirt KVM Server
 		################################################################################################################
 		if int(self.system_profile.get_active()) == 2:
-			# WARNING - HARDENDING SCRIPT NOT RUN!
+			# WARNING - HARDENING SCRIPT NOT RUN!
  			self.MessageBox(self.window,"<b>Warning:</b>\n\nTo configure an Ovirt Manager run the following script:\n\n   # /root/ovirt-engine-install.sh\n\n\n\nTo configure a KVM hypervisor to attach to Ovirt Manager:\n\n   # /root/ovirt-kvm-preinstall.sh\n\nAfter adding the system to to Ovirt Manager, run the following:\n\n   # /root/ovirt-kvm-postinstall.sh",gtk.MESSAGE_WARNING)
 			# Partitioning
 			if self.disk_total < 60:
