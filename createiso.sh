@@ -96,7 +96,7 @@ if [[ $? -eq 0 ]]; then
 	mkdir $DIR/hardened-tmp
 	$SUDO mount -o loop $1 $DIR/original-mnt
 	if [[ -e $DIR/original-mnt/.discinfo && -e $DIR/original-mnt/.treeinfo ]]; then
-		CENTOS_VERSION=$(grep "^7\.[0-9]" $DIR/original-mnt/.discinfo)
+		CENTOS_VERSION=$(grep -E "^7\.[0-9]+" $DIR/original-mnt/.discinfo)
 		MAJOR=$(echo $CENTOS_VERSION | awk -F '.' '{ print $1 }')
 		MINOR=$(echo $CENTOS_VERSION | awk -F '.' '{ print $2 }')
 		BUILD=$(ls $DIR/original-mnt/Packages/centos-release* | awk -F '.' '{ print $2 }')
