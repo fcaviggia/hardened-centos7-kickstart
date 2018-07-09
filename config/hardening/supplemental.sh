@@ -676,6 +676,7 @@ clock-format="12h"
 
 [org/gnome/desktop/screensaver]
 user-switch-enabled=false
+lock-enabled=true
 
 [org/gnome/desktop/session]
 idle-delay=900
@@ -701,6 +702,7 @@ EOF
 /org/gnome/desktop/privacy/remove-old-trash-files
 /org/gnome/desktop/privacy/old-files-age
 /org/gnome/desktop/screensaver/user-switch-enabled
+/org/gnome/desktop/screensaver/lock-enabled
 /org/gnome/desktop/session/idle-delay
 /org/gnome/desktop/thumbnailers/disable-all
 /org/gnome/nm-applet/disable-wifi-create
@@ -734,6 +736,7 @@ clock-format="12h"
 
 [org.gnome.desktop.screensaver]
 user-switch-enabled=false
+lock-enabled=true
 
 [org.gnome.desktop.session]
 idle-delay=900
