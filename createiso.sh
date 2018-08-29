@@ -99,8 +99,8 @@ if [[ $? -eq 0 ]]; then
 		CENTOS_VERSION=$(grep -E "^7\.[0-9]+" $DIR/original-mnt/.discinfo)
 		MAJOR=$(echo $CENTOS_VERSION | awk -F '.' '{ print $1 }')
 		MINOR=$(echo $CENTOS_VERSION | awk -F '.' '{ print $2 }')
-		BUILD=$(ls $DIR/original-mnt/Packages/centos-release* | awk -F '.' '{ print $2 }')
-		ARCH=$(ls $DIR/original-mnt/Packages/centos-release* | awk -F '.' '{ print $5 }')
+		BUILD=$(cd $DIR/original-mnt/Packages/; ls centos-release* | awk -F '.' '{ print $2 }')
+		ARCH=$(cd $DIR/original-mnt/Packages/; ls centos-release* | awk -F '.' '{ print $5 }')
 		HARDENED_ISO="CentOS-$MAJOR.$MINOR-$ARCH-DVD-$BUILD-hardened.iso"
 		if [[ $MAJOR -ne 7 ]]; then
 			echo "ERROR: Image is not CentOS 7.4+"
