@@ -1045,9 +1045,16 @@ class Display_Menu:
 			# Write Kickstart Configuration
 			f = open('/tmp/hardening','w')
 			f.write('network --hostname '+self.hostname.get_text()+' \n')
-			f.write('rootpw --iscrypted '+str(self.password)+(' --lock' if self.lock_root.get_active() == True else '')+'\n')
+                        if self.lock_root.get_active() == True:
+				f.write('rootpw --iscrypted '+str(self.password)+(' --lock\n')
+			else:
+				f.write('rootpw --iscrypted '+str(self.password)+('\n')
+			# The user admin (with privledged sudo, but no sshd access rights replaces root)
+			# Note for SSH Access add ',sshusers' to the groups bleow
+                        f.write('user --name=admin --groups=wheel --password='+str(self.password)+' --iscrypted \n')
+			# Don't expire admin user since acting as root with sudo
+			f.write('chage -I -1 -m 0 -M 99999 -E -1 admin \n')
                         f.write('bootloader --location=mbr --driveorder='+str(self.data["INSTALL_DRIVES"])+' --append="crashkernel=auto rhgb quiet audit=1" --password='+self.quoted_password+'\n')
-			f.write('user --name=admin --groups=wheel --password='+str(self.password)+' --iscrypted \n')
 			f.close()
 			f = open('/tmp/partitioning','w')
 			if self.data["IGNORE_DRIVES"] != "":
@@ -1055,7 +1062,7 @@ class Display_Menu:
 			f.write('zerombr\n')
 			f.write('clearpart --all --drives='+str(self.data["INSTALL_DRIVES"])+'\n')
 			if self.encrypt_disk.get_active() == True:
-				f.write('part pv.01 --grow --size=200 --encrypted --cipher=\'aes-xts-plain64\' --passphrase='+self.quoted_password+'\n')
+			f.write('part pv.01 --grow --size=200 --encrypted --cipher=\'aes-xts-plain64\' --passphrase='+self.quoted_password+'\n')
 			else:
 				f.write('part pv.01 --grow --size=200\n')
 			f.write('part /boot --fstype=xfs --size=1024\n')
