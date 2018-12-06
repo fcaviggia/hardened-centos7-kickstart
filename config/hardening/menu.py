@@ -1046,9 +1046,9 @@ class Display_Menu:
 			f = open('/tmp/hardening','w')
 			f.write('network --hostname '+self.hostname.get_text()+' \n')
                         if self.lock_root.get_active() == True:
-				f.write('rootpw --iscrypted '+str(self.password)+(' --lock\n')
+				f.write('rootpw --iscrypted '+str(self.password)+' --lock\n')
 			else:
-				f.write('rootpw --iscrypted '+str(self.password)+('\n')
+				f.write('rootpw --iscrypted '+str(self.password)+'\n')
 			# The user admin (with privledged sudo, but no sshd access rights replaces root)
 			# Note for SSH Access add ',sshusers' to the groups bleow
                         f.write('user --name=admin --groups=wheel --password='+str(self.password)+' --iscrypted \n')
