@@ -518,6 +518,23 @@ cat <<EOF >> /etc/hosts.deny
 ALL: ALL
 EOF
 
+########################################
+# FirewallD Additonal Protections
+########################################
+# Set Default Zone to DROP
+sed -i '/DefaultZone=/c\DefaultZone=drop' /etc/firewalld/firewalld.conf
+# Rate Limit
+firewall-cmd --permanent --direct --add-rule ipv4 filter INPUT_direct 0 -p tcp -m limit --limit 25/minute --limit-burst100  -j ACCEPT
+# Remove DHCPv6
+firewall-cmd --permanent --zone=public --remove-service=dhcpv6-client
+firewall-cmd --reload
+
+
+########################################
+# Postfix - Prevent Mail Relay
+########################################
+postconf -e 'smtpd_client_restrictions = permit_mynetworks,reject'    
+
 
 ########################################
 # Filesystem Attributes
