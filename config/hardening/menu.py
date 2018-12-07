@@ -1052,8 +1052,6 @@ class Display_Menu:
 			# The user admin (with privledged sudo, but no sshd access rights replaces root)
 			# Note for SSH Access add ',sshusers' to the groups bleow
                         f.write('user --name=admin --groups=wheel --password='+str(self.password)+' --iscrypted \n')
-			# Don't expire admin user since acting as root with sudo
-			f.write('chage -I -1 -m 0 -M 99999 -E -1 admin \n')
                         f.write('bootloader --location=mbr --driveorder='+str(self.data["INSTALL_DRIVES"])+' --append="crashkernel=auto rhgb quiet audit=1" --password='+self.quoted_password+'\n')
 			f.close()
 			f = open('/tmp/partitioning','w')
