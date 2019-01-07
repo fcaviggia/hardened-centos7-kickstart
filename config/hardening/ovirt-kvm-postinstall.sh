@@ -1,6 +1,6 @@
 #!/bin/sh
 # This script was written by Frank Caviggia
-# Last update was 07 Nov 2016
+# Last update was 04 Dec 2018
 #
 # Script: ovirt-postinstall.sh
 # Description: Losens Hardening settings temporarily to allow registration with RHEVM 3.x
@@ -33,5 +33,8 @@ mount -o remount,defaults /tmp
 
 # Restart Firewall
 systemctl restart iptables
+
+# Never Expire VDSM account
+chage -m 0 -M 99999 -I -1 -E -1 vdsm
 
 exit 0
