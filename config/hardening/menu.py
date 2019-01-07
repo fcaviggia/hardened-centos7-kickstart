@@ -437,6 +437,7 @@ class Display_Menu:
 		# Run Hardening Script
 		f.write('/usr/bin/oscap xccdf eval --profile '+str(self.profile)+' --remediate --results /root/`hostname`-ssg-results.xml /usr/share/xml/scap/ssg/content/ssg-centos7-ds.xml\n')
 		# Firewall Configuration
+		f.write('cp /root/hardening/firewalld.sh /root/\n')
 		f.write('firewall-cmd --permanent --add-service=ssh\n')
 		f.write('firewall-cmd --reload\n')
 		f.close()
@@ -504,6 +505,7 @@ class Display_Menu:
 			# Run Hardening Script
 			f.write('/usr/bin/oscap xccdf eval --profile '+str(self.profile)+' --remediate --results /root/`hostname`-ssg-results.xml /usr/share/xml/scap/ssg/content/ssg-centos7-ds.xml\n')
 			# Firewall Configuration
+			f.write('cp /root/hardening/firewalld.sh /root/\n')
 			f.write('firewall-cmd --permanent --add-service=ssh\n')
 			f.write('firewall-cmd --reload\n')
 			# Runlevel Configuration
@@ -542,6 +544,7 @@ class Display_Menu:
 			# Run Hardening Script
 			f.write('/usr/bin/oscap xccdf eval --profile '+str(self.profile)+' --remediate --results /root/`hostname`-ssg-results.xml /usr/share/xml/scap/ssg/content/ssg-centos7-ds.xml\n')
 			# Firewall Configuration
+			f.write('cp /root/hardening/firewalld.sh /root/\n')
 			f.write('firewall-cmd --permanent --add-service=ssh --add-service=http --add-service=https --add-service=ldap --add-service=ldaps --add-service=kerberos --add-service=kpasswd --add-service=dns --add-service=ntp\n')
 			f.write('firewall-cmd --reload\n')
 			# Runlevel Configuration
@@ -586,16 +589,8 @@ class Display_Menu:
 			# Run Hardening Script
 			f.write('/usr/bin/oscap xccdf eval --profile '+str(self.profile)+' --remediate --results /root/`hostname`-ssg-results.xml /usr/share/xml/scap/ssg/content/ssg-centos7-ds.xml\n')
 			# Firewall Configuration
-			f.write('cp /root/hardening/iptables.sh /root/\n')
-			f.write('/root/iptables.sh\n')
-			f.write('systemctl mask firewalld\n')
-			f.write('systemctl stop firewalld\n')
-			f.write('systemctl enable iptables\n')
-			f.write('systemctl enable ip6tables\n')
-			f.write('systemctl enable ebtables\n')
-			f.write('systemctl start iptables\n')
-			f.write('systemctl start ip6tables\n')
-			f.write('systemctl start ebtables\n')
+			f.write('cp /root/hardening/firewalld.sh /root/\n')
+			f.write('/root/firewalld.sh\n')
 			# Runlevel Configuration
 			f.write('systemctl set-default multi-user.target\n')
 			f.close()
@@ -604,7 +599,6 @@ class Display_Menu:
 			f.write('-firewall*\n')
 			f.write('ebtables\n')
 			f.write('iptables\n')
-			f.write('iptables-services\n')
 			f.write('libvirt\n')
 			f.write('pciutils\n')
 			f.close()
@@ -636,6 +630,7 @@ class Display_Menu:
 			f.write('/usr/bin/oscap xccdf eval --profile '+str(self.profile)+' --remediate --results /root/`hostname`-ssg-results.xml /usr/share/xml/scap/ssg/content/ssg-centos7-ds.xml\n')
 			f.write('/usr/bin/oscap xccdf eval --profile xccdf_org.ssgproject.content_profile_stig-firefox-upstream --remediate --results /root/`hostname`-ssg-firefox-results.xml /usr/share/xml/scap/ssg/content/ssg-firefox-ds.xml\n')
 			# Firewall Configuration
+			f.write('cp /root/hardening/firewalld.sh /root/\n')
 			f.write('firewall-cmd --permanent --add-service=ssh\n')
 			f.write('firewall-cmd --reload\n')
 			# Runlevel Configuration
@@ -691,12 +686,8 @@ class Display_Menu:
 			f.write('/usr/bin/oscap xccdf eval --profile '+str(self.profile)+' --remediate --results /root/`hostname`-ssg-results.xml /usr/share/xml/scap/ssg/content/ssg-centos7-ds.xml\n')
 			f.write('/usr/bin/oscap xccdf eval --profile xccdf_org.ssgproject.content_profile_stig-firefox-upstream --remediate --results /root/`hostname`-ssg-firefox-results.xml /usr/share/xml/scap/ssg/content/ssg-firefox-ds.xml\n')
 			# Firewall Configuration
-			f.write('cp /root/hardening/iptables.sh /root/\n')
-			f.write('/root/iptables.sh --kvm\n')
-			f.write('systemctl mask firewalld\n')
-			f.write('systemctl stop firewalld\n')
-			f.write('systemctl enable iptables\n')
-			f.write('systemctl start iptables\n')
+			f.write('cp /root/hardening/firewalld.sh /root/\n')
+			f.write('/root/firewalld.sh --kvm\n')
 			# Runlevel Configuration
 			f.write('systemctl set-default graphical.target\n')
 			f.close()
@@ -727,7 +718,6 @@ class Display_Menu:
 			f.write('-NetworkManager*\n')
 			f.write('ebtables\n')
 			f.write('iptables\n')
-			f.write('iptables-services\n')
 			f.close()
 
 
