@@ -364,6 +364,44 @@ if [ -f /etc/audit/rules.d/.rules ]; then
 	rm /etc/audit/rules.d/.rules
 fi
 
+cat <<EOF >> /etc/audit/auditd.conf
+#
+# This file controls the configuration of the audit daemon
+#
+local_events = yes
+write_logs = yes
+log_file = /var/log/audit/audit.log
+log_group = root
+log_format = RAW
+flush = INCREMENTAL_ASYNC
+freq = 50
+max_log_file = 8
+num_logs = 5
+priority_boost = 4
+disp_qos = lossy
+dispatcher = /sbin/audispd
+name_format = NONE
+##name = mydomain
+max_log_file_action = ROTATE
+space_left = 100
+verify_email = yes
+action_mail_acct = root
+admin_space_left = 75
+disk_full_action = SUSPEND
+disk_error_action = SUSPEND
+use_libwrap = yes
+##tcp_listen_port = 60
+tcp_listen_queue = 5
+tcp_max_per_addr = 1
+##tcp_client_ports = 1024-65535
+tcp_client_max_idle = 0
+enable_krb5 = no
+krb5_principal = auditd
+##krb5_key_file = /etc/audit/audit.key
+distribute_network = no
+EOF
+
+
 ########################################
 # Fix cron.allow
 ########################################
@@ -375,7 +413,6 @@ chown root:root /etc/cron.allow
 # Make SELinux Configuration Immutable
 ########################################
 chattr +i /etc/selinux/config
-
 
 ########################################
 # Disable Control-Alt-Delete
