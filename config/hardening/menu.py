@@ -8,7 +8,7 @@
 # Copyright: Frank Caviggia, (C) 2018
 # License: Apache License, Version 2.0
 
-import os,sys,re,crypt,random,pyudev
+import os,sys,re,crypt,random
 try:
 	os.environ['DISPLAY']
 	import pygtk,gtk
@@ -290,12 +290,6 @@ class Display_Menu:
 
 		self.vbox.add(self.encrypt)
 
-		# By default, do not disable USB support if a USB keyboard is present
-		if any([device.parent.device_type==u'usb_interface' for device in pyudev.Context().list_devices(subsystem='input') if device.get('ID_INPUT_KEYBOARD', None)]):
-			self.nousb_kernel.set_active(False)
-		else:
-			self.nousb_kernel.set_active(True)
-
 		# Minimal Installation Warning
 		if self.disk_total < 8:
 			self.MessageBox(self.window,"<b>Recommended minimum of 8Gb disk space for a Minimal Install!</b>\n\n You have "+str(self.disk_total)+"Gb available.",gtk.MESSAGE_WARNING)
@@ -437,7 +431,6 @@ class Display_Menu:
 		# Run Hardening Script
 		f.write('/usr/bin/oscap xccdf eval --profile '+str(self.profile)+' --remediate --results /root/`hostname`-ssg-results.xml /usr/share/xml/scap/ssg/content/ssg-centos7-ds.xml\n')
 		# Firewall Configuration
-		f.write('cp /root/hardening/firewalld.sh /root/\n')
 		f.write('firewall-cmd --permanent --add-service=ssh\n')
 		f.write('firewall-cmd --reload\n')
 		f.close()
@@ -505,7 +498,6 @@ class Display_Menu:
 			# Run Hardening Script
 			f.write('/usr/bin/oscap xccdf eval --profile '+str(self.profile)+' --remediate --results /root/`hostname`-ssg-results.xml /usr/share/xml/scap/ssg/content/ssg-centos7-ds.xml\n')
 			# Firewall Configuration
-			f.write('cp /root/hardening/firewalld.sh /root/\n')
 			f.write('firewall-cmd --permanent --add-service=ssh\n')
 			f.write('firewall-cmd --reload\n')
 			# Runlevel Configuration
@@ -544,7 +536,6 @@ class Display_Menu:
 			# Run Hardening Script
 			f.write('/usr/bin/oscap xccdf eval --profile '+str(self.profile)+' --remediate --results /root/`hostname`-ssg-results.xml /usr/share/xml/scap/ssg/content/ssg-centos7-ds.xml\n')
 			# Firewall Configuration
-			f.write('cp /root/hardening/firewalld.sh /root/\n')
 			f.write('firewall-cmd --permanent --add-service=ssh --add-service=http --add-service=https --add-service=ldap --add-service=ldaps --add-service=kerberos --add-service=kpasswd --add-service=dns --add-service=ntp\n')
 			f.write('firewall-cmd --reload\n')
 			# Runlevel Configuration
@@ -588,15 +579,14 @@ class Display_Menu:
 			f.write('yum localinstall -y /root/hardening/ovirt-release*.rpm\n')
 			# Run Hardening Script
 			f.write('/usr/bin/oscap xccdf eval --profile '+str(self.profile)+' --remediate --results /root/`hostname`-ssg-results.xml /usr/share/xml/scap/ssg/content/ssg-centos7-ds.xml\n')
-			# Firewall Configuration
-			f.write('cp /root/hardening/firewalld.sh /root/\n')
-			f.write('/root/firewalld.sh\n')
 			# Runlevel Configuration
 			f.write('systemctl set-default multi-user.target\n')
+			# Firewall Configuration
+			f.write('firewall-cmd --permanent --add-service=ssh\n')
+			f.write('firewall-cmd --reload\n')
 			f.close()
 			# Package Selection
 			f = open('/tmp/hardening-packages','w')
-			f.write('-firewall*\n')
 			f.write('ebtables\n')
 			f.write('iptables\n')
 			f.write('libvirt\n')
@@ -630,7 +620,6 @@ class Display_Menu:
 			f.write('/usr/bin/oscap xccdf eval --profile '+str(self.profile)+' --remediate --results /root/`hostname`-ssg-results.xml /usr/share/xml/scap/ssg/content/ssg-centos7-ds.xml\n')
 			f.write('/usr/bin/oscap xccdf eval --profile xccdf_org.ssgproject.content_profile_stig-firefox-upstream --remediate --results /root/`hostname`-ssg-firefox-results.xml /usr/share/xml/scap/ssg/content/ssg-firefox-ds.xml\n')
 			# Firewall Configuration
-			f.write('cp /root/hardening/firewalld.sh /root/\n')
 			f.write('firewall-cmd --permanent --add-service=ssh\n')
 			f.write('firewall-cmd --reload\n')
 			# Runlevel Configuration
@@ -685,9 +674,9 @@ class Display_Menu:
 			# Run Hardening Script
 			f.write('/usr/bin/oscap xccdf eval --profile '+str(self.profile)+' --remediate --results /root/`hostname`-ssg-results.xml /usr/share/xml/scap/ssg/content/ssg-centos7-ds.xml\n')
 			f.write('/usr/bin/oscap xccdf eval --profile xccdf_org.ssgproject.content_profile_stig-firefox-upstream --remediate --results /root/`hostname`-ssg-firefox-results.xml /usr/share/xml/scap/ssg/content/ssg-firefox-ds.xml\n')
-			# Firewall Configuration
-			f.write('cp /root/hardening/firewalld.sh /root/\n')
-			f.write('/root/firewalld.sh --kvm\n')
+                        # Firewall Configuration
+			f.write('firewall-cmd --permanent --add-service=ssh\n')
+			f.write('firewall-cmd --reload\n')
 			# Runlevel Configuration
 			f.write('systemctl set-default graphical.target\n')
 			f.close()
@@ -714,7 +703,6 @@ class Display_Menu:
 			f.write('pygtk2\n')
 			f.write('vim-X11\n')
 			# Remove FirewallD and Network Manager (virt-manager will define networks)
-			f.write('-firewall*\n')
 			f.write('-NetworkManager*\n')
 			f.write('ebtables\n')
 			f.write('iptables\n')
@@ -1050,7 +1038,7 @@ class Display_Menu:
 			f.write('zerombr\n')
 			f.write('clearpart --all --drives='+str(self.data["INSTALL_DRIVES"])+'\n')
 			if self.encrypt_disk.get_active() == True:
-			f.write('part pv.01 --grow --size=200 --encrypted --cipher=\'aes-xts-plain64\' --passphrase='+self.quoted_password+'\n')
+				f.write('part pv.01 --grow --size=200 --encrypted --cipher=\'aes-xts-plain64\' --passphrase='+self.quoted_password+'\n')
 			else:
 				f.write('part pv.01 --grow --size=200\n')
 			f.write('part /boot --fstype=xfs --size=1024\n')
