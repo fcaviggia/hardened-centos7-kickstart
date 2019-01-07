@@ -154,7 +154,7 @@ restrict -6 default nomodify nopeer noquery notrap
 restrict 127.0.0.1
 restrict ::1
 # poll server at higher rate to prevent drift
-maxpoll 17
+maxpoll 10
 # server(s) we time sync to
 ##server 192.168.0.1
 ##server 2001:DB9::1
@@ -204,6 +204,9 @@ logdir /var/log/chrony
 
 # Select which information is logged.
 #log measurements statistics tracking
+
+# poll server at higher rate to prevent drift
+maxpoll 10
 EOF
 
 
