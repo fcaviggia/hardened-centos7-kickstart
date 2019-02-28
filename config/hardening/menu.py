@@ -575,6 +575,7 @@ class Display_Menu:
 			f = open('/tmp/hardening-post','w')
 			# Ovirt Scripts for Pre-Install/Post-Install
 			f.write('cp /root/hardening/ovirt*.sh /root/\n')
+			f.write('rpm --import /root/hardening/RPM-GPG-ovirt\n')
 			f.write('rpm --import /root/hardening/RPM-GPG-ovirt-v2\n')
 			f.write('yum localinstall -y /root/hardening/ovirt-release*.rpm\n')
 			# Run Hardening Script
